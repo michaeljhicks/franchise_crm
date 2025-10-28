@@ -5,10 +5,11 @@
   <%= link_to "Schedule a new job for this machine", new_customer_machine_job_path(@customer, @machine) %>
 </p>
 
-<div>
-  <%= link_to "Edit this machine", edit_machine_path(@machine) %> |
-  <%= link_to "Back to machines", machines_path %>
 
-  <%= button_to "Destroy this machine", @machine, method: :delete %>
+<div>
+
+  <%= link_to "Edit this machine", edit_customer_machine_path(@customer, @machine) %> |
+  <%= link_to "Back to customer's machines", customer_machines_path(@customer) %>
+  <%= button_to "Destroy this machine", [@customer, @machine], method: :delete %>
 </div>
 

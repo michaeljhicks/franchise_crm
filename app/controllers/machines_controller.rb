@@ -68,7 +68,13 @@ class MachinesController < ApplicationController
     end
 
     # Only allow a list of trusted parameters through.
-    def machine_params
-      params.require(:machine).permit(:machine_make, :machine_model, :machine_serial_number, :machine_type, :bin_make, :bin_model, :bin_serial_number, :purchase_date, :install_date, :status)
-    end
+  def machine_params
+    params.require(:machine).permit(
+      :machine_make, :machine_model, :machine_serial_number,
+      :machine_type, :bin_make, :bin_model, :bin_serial_number,
+      :purchase_date, :install_date, :status,
+      # ADD THESE VIRTUAL ATTRIBUTES
+      :other_machine_make, :other_machine_type, :other_status
+    )
+  end
 end

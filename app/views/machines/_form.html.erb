@@ -1,8 +1,10 @@
-<%= form_with(model: [@customer, @machine]) do |form| %>
+<%# app/views/machines/_form.html.erb %>
+
+<%# This connects the whole form to our Stimulus controller %>
+<%= form_with(model: [@customer, @machine], data: { controller: "dynamic-form" }) do |form| %>
   <% if machine.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(machine.errors.count, "error") %> prohibited this machine from being saved:</h2>
-
       <ul>
         <% machine.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -11,62 +13,79 @@
     </div>
   <% end %>
 
+  <%# 1. Machine Make Dropdown with "Other" field %>
   <div>
-    <%= form.label :machine_make, style: "display: block" %>
-    <%= form.text_field :machine_make %>
+    <%= form.label :machine_make %>
+    <%= form.select :machine_make, Machine::MACHINE_MAKES, { prompt: 'Select a make' }, { data: { action: "change->dynamic-form#toggleOther change->dynamic-form#toggleModelField" } } %>
+  </div>
+  <div data-dynamic-form-target="otherContainer" class="hidden">
+    <%= form.label :other_machine_make, "Please specify other make" %>
+    <%= form.text_field :other_machine_make %>
   </div>
 
-  <div>
-    <%= form.label :machine_model, style: "display: block" %>
+  <%# 2. Conditional Machine Model field %>
+  <div data-dynamic-form-target="modelContainer">
+    <%# This will be replaced by our Stimulus controller %>
+    <%= form.label :machine_model %>
     <%= form.text_field :machine_model %>
   </div>
 
   <div>
-    <%= form.label :machine_serial_number, style: "display: block" %>
+    <%= form.label :machine_serial_number %>
     <%= form.text_field :machine_serial_number %>
   </div>
 
+  <%# 3. Machine Type Dropdown with "Other" field %>
   <div>
-    <%= form.label :machine_type, style: "display: block" %>
-    <%= form.text_field :machine_type %>
+    <%= form.label :machine_type %>
+    <%= form.select :machine_type, Machine::MACHINE_TYPES, { prompt: 'Select a type' }, { data: { action: "change->dynamic-form#toggleOther" } } %>
+  </div>
+  <div data-dynamic-form-target="otherContainer" class="hidden">
+    <%= form.label :other_machine_type, "Please specify other type" %>
+    <%= form.text_field :other_machine_type %>
   </div>
 
   <div>
-    <%= form.label :bin_make, style: "display: block" %>
+    <%= form.label :bin_make %>
     <%= form.text_field :bin_make %>
   </div>
 
   <div>
-    <%= form.label :bin_model, style: "display: block" %>
+    <%= form.label :bin_model %>
     <%= form.text_field :bin_model %>
   </div>
 
   <div>
-    <%= form.label :bin_serial_number, style: "display: block" %>
+    <%= form.label :bin_serial_number %>
     <%= form.text_field :bin_serial_number %>
   </div>
 
   <div>
-    <%= form.label :purchase_date, style: "display: block" %>
+    <%= form.label :purchase_date %>
     <%= form.date_field :purchase_date %>
   </div>
 
   <div>
-    <%= form.label :install_date, style: "display: block" %>
+    <%= form.label :install_date %>
     <%= form.date_field :install_date %>
   </div>
 
+  <%# 4. Status Dropdown with "Other" field %>
   <div>
-    <%= form.label :status, style: "display: block" %>
-    <%= form.text_field :status %>
+    <%= form.label :status %>
+    <%= form.select :status, Machine::STATUSES, { prompt: 'Select a status' }, { data: { action: "change->dynamic-form#toggleOther" } } %>
   </div>
-
-  <div>
-    <%= form.label :customer_id, style: "display: block" %>
-    <%= form.text_field :customer_id %>
+  <div data-dynamic-form-target="otherContainer" class="hidden">
+    <%= form.label :other_status, "Please specify other status" %>
+    <%= form.text_field :other_status %>
   </div>
 
   <div>
     <%= form.submit %>
   </div>
 <% end %>
+
+<%# Add a simple CSS class to hide our "Other" fields initially %>
+<style>
+  .hidden { display: none; }
+</style>
