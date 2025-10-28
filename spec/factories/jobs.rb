@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :job do
-    scheduled_date_time { "2025-10-28 13:17:57" }
-    completed_date_time { "2025-10-28 13:17:57" }
+    scheduled_date_time { "2025-10-28 14:23:04" }
+    completed_date_time { "2025-10-28 14:23:04" }
     job_type { "MyString" }
     status { "MyString" }
     contractor_notes { "MyText" }

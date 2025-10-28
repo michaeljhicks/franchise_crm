@@ -1,70 +1,67 @@
+# app/controllers/machines_controller.rb
+
 class MachinesController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_customer # We need the parent customer first
   before_action :set_machine, only: %i[ show edit update destroy ]
 
-  # GET /machines or /machines.json
+  # GET /customers/:customer_id/machines
   def index
-    @machines = Machine.all
+    @machines = @customer.machines
   end
 
-  # GET /machines/1 or /machines/1.json
+  # GET /customers/:customer_id/machines/:id
   def show
   end
 
-  # GET /machines/new
+  # GET /customers/:customer_id/machines/new
   def new
-    @machine = Machine.new
+    @machine = @customer.machines.build
   end
 
-  # GET /machines/1/edit
+  # GET /customers/:customer_id/machines/:id/edit
   def edit
   end
 
-  # POST /machines or /machines.json
+  # POST /customers/:customer_id/machines
   def create
-    @machine = Machine.new(machine_params)
+    @machine = @customer.machines.build(machine_params)
 
-    respond_to do |format|
-      if @machine.save
-        format.html { redirect_to @machine, notice: "Machine was successfully created." }
-        format.json { render :show, status: :created, location: @machine }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @machine.errors, status: :unprocessable_entity }
-      end
+    if @machine.save
+      redirect_to customer_machine_url(@customer, @machine), notice: "Machine was successfully created."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /machines/1 or /machines/1.json
+  # PATCH/PUT /customers/:customer_id/machines/:id
   def update
-    respond_to do |format|
-      if @machine.update(machine_params)
-        format.html { redirect_to @machine, notice: "Machine was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @machine }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @machine.errors, status: :unprocessable_entity }
-      end
+    if @machine.update(machine_params)
+      redirect_to customer_machine_url(@customer, @machine), notice: "Machine was successfully updated."
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /machines/1 or /machines/1.json
+  # DELETE /customers/:customer_id/machines/:id
   def destroy
     @machine.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to machines_path, notice: "Machine was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to customer_machines_url(@customer), notice: "Machine was successfully destroyed."
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    # This method finds the parent Customer, ensuring it belongs to the current_user
+    def set_customer
+      @customer = current_user.customers.find(params[:customer_id])
+    end
+
+    # This method finds the Machine, ensuring it belongs to the @customer we just found
     def set_machine
-      @machine = Machine.find(params.expect(:id))
+      @machine = @customer.machines.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def machine_params
-      params.expect(machine: [ :machine_make, :machine_model, :machine_serial_number, :machine_type, :bin_make, :bin_model, :bin_serial_number, :purchase_date, :install_date, :status, :customer_id ])
+      params.require(:machine).permit(:machine_make, :machine_model, :machine_serial_number, :machine_type, :bin_make, :bin_model, :bin_serial_number, :purchase_date, :install_date, :status)
     end
 end

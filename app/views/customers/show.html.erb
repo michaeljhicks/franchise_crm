@@ -5,6 +5,8 @@
 <div>
   <%= link_to "Edit this customer", edit_customer_path(@customer) %> |
   <%= link_to "Back to customers", customers_path %>
+  <%= link_to "New machine for this customer", new_customer_machine_path(@customer) %>
+
 
   <%= button_to "Destroy this customer", @customer, method: :delete %>
 </div>

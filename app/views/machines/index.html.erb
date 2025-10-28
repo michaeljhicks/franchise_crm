@@ -1,16 +1,28 @@
+<%# app/views/machines/index.html.erb %>
+
 <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Machines" %>
+<%# This title is now more specific, showing which customer these machines belong to. %>
+<% content_for :title, "Machines for #{@customer.business_name}" %>
 
-<h1>Machines</h1>
+<h1>Machines for <%= @customer.business_name %></h1>
 
 <div id="machines">
   <% @machines.each do |machine| %>
+    <%# The partial 'app/views/machines/_machine.html.erb' will be rendered here %>
     <%= render machine %>
     <p>
-      <%= link_to "Show this machine", machine %>
+      <%# UPDATED: The link now includes the parent @customer object %>
+      <%= link_to "Show this machine", customer_machine_path(@customer, machine) %>
     </p>
   <% end %>
 </div>
 
-<%= link_to "New machine", new_machine_path %>
+<%# UPDATED: This link now knows which customer to create a new machine for %>
+<%= link_to "New machine", new_customer_machine_path(@customer) %>
+
+<br>
+<br>
+
+<%# ADDED: A helpful link to navigate back to the parent customer's page %>
+<%= link_to "Back to customer", @customer %>
