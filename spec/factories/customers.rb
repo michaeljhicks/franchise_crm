@@ -8,8 +8,6 @@ FactoryBot.define do
     main_contact_name { "MyString" }
     main_contact_phone { "MyString" }
     main_contact_email { "MyString" }
-    other_contact_name { "MyString" }
-    other_contact_phone { "MyString" }
     customer_since { "2025-10-28" }
     status { "MyString" }
     notes { "MyText" }

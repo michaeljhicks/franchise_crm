@@ -1,5 +1,7 @@
 class CreateCustomers < ActiveRecord::Migration[8.0]
-  def change
+  def up
+    return if table_exists?(:customers)
+
     create_table :customers do |t|
       t.string :business_name
       t.string :street_address
@@ -9,14 +11,16 @@ class CreateCustomers < ActiveRecord::Migration[8.0]
       t.string :main_contact_name
       t.string :main_contact_phone
       t.string :main_contact_email
-      t.string :other_contact_name
-      t.string :other_contact_phone
-      t.date :customer_since
+      t.date   :customer_since
       t.string :status
-      t.text :notes
+      t.text   :notes
       t.references :user, null: false, foreign_key: true
 
       t.timestamps
     end
+  end
+
+  def down
+    drop_table :customers if table_exists?(:customers)
   end
 end
