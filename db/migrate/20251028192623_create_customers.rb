@@ -1,6 +1,5 @@
 class CreateCustomers < ActiveRecord::Migration[8.0]
   def up
-    return if table_exists?(:customers)
 
     create_table :customers do |t|
       t.string :business_name
@@ -18,9 +17,5 @@ class CreateCustomers < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-  end
-
-  def down
-    drop_table :customers if table_exists?(:customers)
   end
 end

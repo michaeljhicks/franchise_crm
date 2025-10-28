@@ -1,9 +1,10 @@
 class CustomersController < ApplicationController
+  before_action :authenticate_user! # ADD THIS LINE
   before_action :set_customer, only: %i[ show edit update destroy ]
 
   # GET /customers or /customers.json
   def index
-    @customers = Customer.all
+    @customers = current_user.customers
   end
 
   # GET /customers/1 or /customers/1.json
@@ -21,7 +22,7 @@ class CustomersController < ApplicationController
 
   # POST /customers or /customers.json
   def create
-    @customer = Customer.new(customer_params)
+    @customer = current_user.customers.build(customer_params)
 
     respond_to do |format|
       if @customer.save

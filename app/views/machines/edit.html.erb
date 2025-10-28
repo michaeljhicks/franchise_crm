@@ -1,0 +1,12 @@
+<% content_for :title, "Editing machine" %>
+
+<h1>Editing machine</h1>
+
+<%= render "form", machine: @machine %>
+
+<br>
+
+<div>
+  <%= link_to "Show this machine", @machine %> |
+  <%= link_to "Back to machines", machines_path %>
+</div>
