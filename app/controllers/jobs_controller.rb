@@ -1,7 +1,7 @@
 # app/controllers/jobs_controller.rb
 class JobsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_customer_and_machine # Find the parent objects
+  before_action :set_customer_and_machine # Find the parent objects first
   before_action :set_job, only: %i[ show edit update destroy ]
 
   def index

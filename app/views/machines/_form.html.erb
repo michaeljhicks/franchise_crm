@@ -1,4 +1,4 @@
-<%= form_with(model: machine) do |form| %>
+<%= form_with(model: [@customer, @machine]) do |form| %>
   <% if machine.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(machine.errors.count, "error") %> prohibited this machine from being saved:</h2>

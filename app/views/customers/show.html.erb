@@ -3,10 +3,14 @@
 <%= render @customer %>
 
 <div>
+  <%= link_to "View All Machines for this Customer", customer_machines_path(@customer), style: "font-weight: bold; margin-right: 10px;" %>
+  <%= link_to "Add New Machine", new_customer_machine_path(@customer), style: "font-weight: bold;" %>
+</div>
+<br>
+<div>
   <%= link_to "Edit this customer", edit_customer_path(@customer) %> |
   <%= link_to "Back to customers", customers_path %>
-  <%= link_to "New machine for this customer", new_customer_machine_path(@customer) %>
-
 
   <%= button_to "Destroy this customer", @customer, method: :delete %>
 </div>
+

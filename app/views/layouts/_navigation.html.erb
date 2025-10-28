@@ -1,0 +1,22 @@
+<nav style="background-color: #f8f9fa; padding: 1rem; border-bottom: 1px solid #dee2e6; margin-bottom: 2rem;">
+  <% if user_signed_in? %>
+    <%# --- Links for LOGGED-IN users --- %>
+    <span>
+      <%= link_to "Customers", customers_path, style: "margin-right: 20px; text-decoration: none;" %>
+      <%= link_to "All Machines", machines_path, style: "margin-right: 20px; text-decoration: none;" %>
+      <%= link_to "Contractors", contractors_path, style: "margin-right: 20px; text-decoration: none;" %>
+    </span>
+
+    <span style="float: right;">
+      Logged in as: <strong><%= current_user.email %></strong>
+      <%= button_to "Log Out", destroy_user_session_path, method: :delete, form: { style: 'display: inline; margin-left: 20px;' } %>
+    </span>
+
+  <% else %>
+    <%# --- Links for LOGGED-OUT users --- %>
+    <span>
+      <%= link_to "Log In", new_user_session_path, style: "margin-right: 20px; text-decoration: none;" %>
+      <%= link_to "Sign Up", new_user_registration_path, style: "text-decoration: none;" %>
+    </span>
+  <% end %>
+</nav>

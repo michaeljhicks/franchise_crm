@@ -7,7 +7,14 @@ class MachinesController < ApplicationController
 
   # GET /customers/:customer_id/machines
   def index
-    @machines = @customer.machines
+    if params[:customer_id]
+      # This is the nested route: /customers/1/machines
+      @customer = current_user.customers.find(params[:customer_id])
+      @machines = @customer.machines
+    else
+      # This is the new top-level route: /machines
+      @machines = current_user.machines
+    end
   end
 
   # GET /customers/:customer_id/machines/:id
