@@ -4,7 +4,22 @@ class CustomersController < ApplicationController
 
   # GET /customers or /customers.json
   def index
-    @customers = current_user.customers
+    # Start with the base scope of the current user's customers
+    customers = current_user.customers
+
+    if params[:query].present?
+      # If a search query is present, filter the results
+      # The `?` is a placeholder to safely insert the query
+      # `ILIKE` is a PostgreSQL feature for case-insensitive searching
+      search_term = "%#{params[:query]}%"
+      customers = customers.where(
+        "business_name ILIKE ? OR main_contact_name ILIKE ? OR city ILIKE ?",
+        search_term, search_term, search_term
+      )
+    end
+
+    # Finally, assign the (possibly filtered) results to the instance variable
+    @pagy, @customers = pagy(customers.order(:business_name), items: 20)
   end
 
   # GET /customers/1 or /customers/1.json

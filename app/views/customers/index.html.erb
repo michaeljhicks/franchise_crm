@@ -1,16 +1,44 @@
-<p style="color: green"><%= notice %></p>
+<header style="display: flex; justify-content: space-between; align-items: center;">
+  <h1>Customers</h1>
+  <%= link_to "New customer", new_customer_path, role: "button" %>
+</header>
 
-<% content_for :title, "Customers" %>
+<article>
+  <form action="<%= customers_path %>" method="get">
+    <div class="grid">
+      <input type="search" id="query" name="query" placeholder="Search by name, contact, city..." value="<%= params[:query] %>">
+      <button type="submit">Search</button>
+    </div>
+  </form>
+</article>
 
-<h1>Customers</h1>
-
-<div id="customers">
-  <% @customers.each do |customer| %>
-    <%= render customer %>
-    <p>
-      <%= link_to "Show this customer", customer %>
-    </p>
-  <% end %>
+<div class="overflow-auto"> 
+  <table role="grid">
+    <thead>
+      <tr>
+        <th>Business Name</th>
+        <th>Main Contact</th>
+        <th>Status</th>
+        <th>City, State</th>
+        <th></th> 
+      </tr>
+    </thead>
+    <tbody>
+      <% @customers.each do |customer| %>
+        <tr>
+          <td><strong><%= customer.business_name %></strong></td>
+          <td><%= customer.main_contact_name %></td>
+          <td><%= customer.status %></td>
+          <td><%= "#{customer.city}, #{customer.state}" %></td>
+          <td>
+            <div role="group">
+              <%= link_to "View", customer, class: "secondary outline" %>
+              <%= link_to "Edit", edit_customer_path(customer), class: "secondary outline" %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <nav><%== pagy_nav(@pagy) %></nav>
 </div>
-
-<%= link_to "New customer", new_customer_path %>
