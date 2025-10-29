@@ -15,10 +15,9 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: "dashboard#index"
-    # In the future, you can add more admin-only resources here, like:
-    # resources :users
-    # resources :customers
   end
+
+  resources :jobs, only: [:index, :show]
 
   # root "customers#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

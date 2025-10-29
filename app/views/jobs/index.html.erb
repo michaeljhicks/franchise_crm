@@ -1,20 +1,52 @@
+<header style="display: flex; justify-content: space-between; align-items: center;">
 
-
-<p style="color: green"><%= notice %></p>
-
-<h1>Jobs for Machine: <%= @machine.machine_model %></h1>
-<h3>(<%= link_to @machine.customer.business_name, @customer %>)</h3>
-
-
-<div id="jobs">
-  <% @jobs.each do |job| %>
-    <%= render job %>
-    <p>
-
-      <%= link_to "Show this job", customer_machine_job_path(@customer, @machine, job) %>
-    </p>
+  <% if @machine.present? %>
+    <h1>Jobs for Machine: <%= @machine.machine_model %></h1>
+  <% else %>
+    <h1>All Jobs</h1>
   <% end %>
+</header>
+
+
+<article>
+  <form action="<%= jobs_path %>" method="get">
+    <div class="grid">
+      <input type="search" name="query" placeholder="Search by customer..." value="<%= params[:query] %>">
+      
+      <%= select_tag :status, options_for_select(Job.statuses.keys.map { |s| [s.humanize.titleize, s] }, params[:status]), prompt: "Filter by Status", onchange: "this.form.submit()" %>
+
+      <%= select_tag :job_type, options_for_select(Job.job_types.keys.map { |t| [t.humanize.titleize, t] }, params[:job_type]), prompt: "Filter by Job Type", onchange: "this.form.submit()" %>
+      
+
+      <%= link_to "Clear Filters", jobs_path, class: "secondary outline" %>
+    </div>
+  </form>
+</article>
+
+<div class="overflow-auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Customer</th>
+        <th>Scheduled</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @jobs.each do |job| %>
+        <tr>
+          <td><strong><%= link_to job.customer.business_name, job.customer %></strong></td>
+          <td><%= job.scheduled_date_time ? job.scheduled_date_time.strftime("%b %d, %Y") : 'Not set' %></td>
+          <td><%= job.job_type.humanize.titleize %></td>
+          <td><mark><%= job.status.humanize.titleize %></mark></td>
+          <td>
+            <%= link_to "View", job, class: "secondary outline" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <nav><%== pagy_nav(@pagy) %></nav>
 </div>
-
-
-<%= link_to "New job for this machine", new_customer_machine_job_path(@customer, @machine) %>

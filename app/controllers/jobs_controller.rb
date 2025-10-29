@@ -1,11 +1,38 @@
 # app/controllers/jobs_controller.rb
 class JobsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_customer_and_machine # Find the parent objects first
+
+  before_action :set_customer_and_machine, except: [:index, :show]
   before_action :set_job, only: %i[ show edit update destroy ]
 
   def index
-    @jobs = @machine.jobs
+
+    @jobs = current_user.jobs.includes(:customer, :machine) # Eager load for performance
+
+    if params[:customer_id] && params[:machine_id]
+      @machine = current_user.customers.find(params[:customer_id]).machines.find(params[:machine_id])
+      @jobs = @machine.jobs
+    end
+
+    # --- SEARCH and FILTER logic ---
+    # Filter by status if param is present
+    if params[:status].present?
+      @jobs = @jobs.where(status: params[:status])
+    end
+
+    # Filter by job_type if param is present
+    if params[:job_type].present?
+      @jobs = @jobs.where(job_type: params[:job_type])
+    end
+
+    # Search by customer name
+    if params[:query].present?
+      # The `joins(:customer)` is needed to search on the associated customer's table
+      @jobs = @jobs.joins(:customer).where("customers.business_name ILIKE ?", "%#{params[:query]}%")
+    end
+
+    # Paginate the final results
+    @pagy, @jobs = pagy(@jobs.order(scheduled_date_time: :desc), items: 25)
   end
 
   def show
