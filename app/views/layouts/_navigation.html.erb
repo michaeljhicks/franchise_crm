@@ -1,10 +1,12 @@
 <nav style="background-color: #f8f9fa; padding: 1rem; border-bottom: 1px solid #dee2e6; margin-bottom: 2rem;">
   <% if user_signed_in? %>
-    <%# --- Links for LOGGED-IN users --- %>
     <span>
       <%= link_to "Customers", customers_path, style: "margin-right: 20px; text-decoration: none;" %>
       <%= link_to "All Machines", machines_path, style: "margin-right: 20px; text-decoration: none;" %>
       <%= link_to "Contractors", contractors_path, style: "margin-right: 20px; text-decoration: none;" %>
+      <% if current_user.admin? %>
+        <%= link_to "Admin Dashboard", admin_root_path, style: "font-weight: bold; color: #d32f2f;" %>
+      <% end %>
     </span>
 
     <span style="float: right;">
@@ -13,7 +15,6 @@
     </span>
 
   <% else %>
-    <%# --- Links for LOGGED-OUT users --- %>
     <span>
       <%= link_to "Log In", new_user_session_path, style: "margin-right: 20px; text-decoration: none;" %>
       <%= link_to "Sign Up", new_user_registration_path, style: "text-decoration: none;" %>
