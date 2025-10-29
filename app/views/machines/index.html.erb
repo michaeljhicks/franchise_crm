@@ -1,28 +1,36 @@
-<%# app/views/machines/index.html.erb %>
+
 
 <p style="color: green"><%= notice %></p>
+<p style="color: green"><%= notice %></p>
 
-<%# This title is now more specific, showing which customer these machines belong to. %>
-<% content_for :title, "Machines for #{@customer.business_name}" %>
 
-<h1>Machines for <%= @customer.business_name %></h1>
+<% if @customer.present? %>
+  <%# This is the nested view for a specific customer %>
+  <% content_for :title, "Machines for #{@customer.business_name}" %>
+  <h1>Machines for <%= @customer.business_name %></h1>
+<% else %>
+  <%# This is the top-level "All Machines" view %>
+  <% content_for :title, "All Machines" %>
+  <h1>All Machines</h1>
+  <p>Showing all machines across all customers.</p>
+<% end %>
+
 
 <div id="machines">
   <% @machines.each do |machine| %>
-    <%# The partial 'app/views/machines/_machine.html.erb' will be rendered here %>
+
     <%= render machine %>
     <p>
-      <%# UPDATED: The link now includes the parent @customer object %>
-      <%= link_to "Show this machine", customer_machine_path(@customer, machine) %>
+
+      <%= link_to "Show this machine", customer_machine_path(machine.customer, machine) %>
     </p>
   <% end %>
 </div>
 
-<%# UPDATED: This link now knows which customer to create a new machine for %>
-<%= link_to "New machine", new_customer_machine_path(@customer) %>
 
-<br>
-<br>
 
-<%# ADDED: A helpful link to navigate back to the parent customer's page %>
-<%= link_to "Back to customer", @customer %>
+<% if @customer.present? %>
+  <%= link_to "New machine for this customer", new_customer_machine_path(@customer) %>
+  <br>
+  <%= link_to "Back to customer", @customer %>
+<% end %>

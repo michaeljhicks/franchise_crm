@@ -2,7 +2,7 @@
 
 class MachinesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_customer # We need the parent customer first
+  before_action :set_customer, except: [:index]
   before_action :set_machine, only: %i[ show edit update destroy ]
 
   # GET /customers/:customer_id/machines
