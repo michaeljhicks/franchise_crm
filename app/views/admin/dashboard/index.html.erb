@@ -1,2 +1,35 @@
-<h1>Admin::Dashboard#index</h1>
-<p>Find me in app/views/admin/dashboard/index.html.erb</p>
+<h1>Admin Dashboard</h1>
+<p>A high-level overview of system-wide data.</p>
+
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+  
+  <article>
+    <header>
+      <h2><%= @user_count %></h2>
+    </header>
+    Total Franchisees
+  </article>
+
+  <article>
+    <header>
+      <h2><%= @customer_count %></h2>
+    </header>
+    Total Customers
+  </article>
+
+  <article>
+    <header>
+      <h2><%= @machine_count %></h2>
+    </header>
+    Total Machines
+  </article>
+
+  <article>
+    <header>
+      <h2><%= @job_count %></h2>
+    </header>
+    Total Jobs
+  </article>
+
+</div>
