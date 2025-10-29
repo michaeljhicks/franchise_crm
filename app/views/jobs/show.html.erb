@@ -3,8 +3,8 @@
 <%= render @job %>
 
 <div>
-  <%= link_to "Edit this job", edit_job_path(@job) %> |
-  <%= link_to "Back to jobs", jobs_path %>
+  <%= link_to "Edit this job", edit_customer_machine_job_path(@customer, @machine, @job) %> |
+  <%= link_to "Back to jobs for this machine", customer_machine_jobs_path(@customer, @machine) %>
 
   <%= button_to "Destroy this job", @job, method: :delete %>
 </div>
