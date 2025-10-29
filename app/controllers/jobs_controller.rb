@@ -2,8 +2,8 @@
 class JobsController < ApplicationController
   before_action :authenticate_user!
 
-  before_action :set_customer_and_machine, except: [:index]
-  before_action :set_job, only: %i[ show edit update destroy ]
+  before_action :set_customer_and_machine, except: [:index, :show]
+  before_action :set_job, only: [:edit, :update, :destroy]
 
   def index
 
@@ -35,7 +35,15 @@ class JobsController < ApplicationController
     @pagy, @jobs = pagy(@jobs.order(scheduled_date_time: :desc), items: 25)
   end
 
+  # app/controllers/jobs_controller.rb
+
   def show
+    # Find the job securely through the current user
+    @job = current_user.jobs.includes(:customer, :machine, :tasks).find(params[:id])
+    
+    # We need @customer and @machine for the view's links, so we'll get them from the job itself
+    @customer = @job.customer
+    @machine = @job.machine
   end
 
   def new
@@ -77,8 +85,10 @@ class JobsController < ApplicationController
     end
 
     def set_job
-      @job = @machine.jobs.find(params[:id])
-    end
+    # We need the parent objects first to find the job securely
+    set_customer_and_machine 
+    @job = @machine.jobs.find(params[:id])
+  end
 
     def job_params
       params.require(:job).permit(:scheduled_date_time, :completed_date_time, :job_type, :status, :contractor_notes, :internal_notes, :contractor_id)
