@@ -1,0 +1,39 @@
+
+<h1>Welcome, <%= current_user.owner_name %>!</h1>
+<p>This is your central dashboard. Here is a look at your upcoming schedule.</p>
+
+<article>
+  <header>
+    <strong>Upcoming Jobs (Next 7 Days)</strong>
+  </header>
+
+  <% if @upcoming_jobs.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Scheduled Date & Time</th>
+          <th>Customer</th>
+          <th>Job Type</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @upcoming_jobs.each do |job| %>
+          <tr>
+            <td><%= job.scheduled_date_time.strftime("%a, %b %d, %Y at %l:%M %P") %></td>
+            <td><%= link_to job.customer.business_name, job.customer %></td>
+            <td><%= job.job_type.humanize.titleize %></td>
+            <td><%= job.status.humanize.titleize %></td>
+            <td>
+              <%= link_to "View Job", customer_machine_job_path(job.customer, job.machine, job), class: "secondary" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>You have no jobs scheduled in the next 7 days.</p>
+  <% end %>
+
+</article>
