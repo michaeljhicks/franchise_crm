@@ -1,16 +1,78 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @customer %>
+<header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+  <div>
+    <h1><%= @customer.business_name %></h1>
+    <p><%= @customer.street_address %>, <%= @customer.city %>, <%= @customer.state %> <%= @customer.zip %></p>
+  </div>
+  <div>
+    <%= link_to "Edit Customer", edit_customer_path(@customer), role: "button", class: "secondary" %>
+    <%= link_to "Back to all customers", customers_path %>
+  </div>
+</header>
 
-<div>
-  <%= link_to "View All Machines for this Customer", customer_machines_path(@customer), style: "font-weight: bold; margin-right: 10px;" %>
-  <%= link_to "Add New Machine", new_customer_machine_path(@customer), style: "font-weight: bold;" %>
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+  
+  <div class="left-column">
+    
+    <article>
+      <header style="display: flex; justify-content: space-between; align-items: center;">
+        <strong>Equipment / Machines</strong>
+        <%= link_to "+ New Machine", new_customer_machine_path(@customer), role: "button", class: "outline" %>
+      </header>
+      <% if @customer.machines.any? %>
+        <% @customer.machines.each do |machine| %>
+          <p>
+            <strong><%= machine.machine_make %> <%= machine.machine_model %></strong><br>
+            <small>Serial: <%= machine.machine_serial_number %> | Status: <%= machine.status %></small><br>
+            <%= link_to "View Details", customer_machine_path(@customer, machine) %>
+          </p>
+          <hr>
+        <% end %>
+      <% else %>
+        <p>No machines have been added for this customer yet.</p>
+      <% end %>
+    </article>
+
+    <article>
+      <header>
+        <strong>Recent Jobs</strong>
+      </header>
+      <% if @customer.jobs.any? %>
+        <%# Display the 5 most recent jobs %>
+        <% @customer.jobs.order(created_at: :desc).limit(5).each do |job| %>
+          <p>
+            <strong><%= job.job_type.humanize.titleize %> on <%= job.scheduled_date_time ? job.scheduled_date_time.strftime("%b %d, %Y") : "TBD" %></strong><br>
+            <small>Status: <mark><%= job.status.humanize.titleize %></mark></small><br>
+            <%= link_to "View Job", customer_machine_job_path(job.customer, job.machine, job) %>
+          </p>
+          <hr>
+        <% end %>
+      <% else %>
+        <p>No jobs have been scheduled for this customer yet.</p>
+      <% end %>
+    </article>
+    
+  </div>
+
+  <div class="right-column">
+
+    <article>
+      <header><strong>Contact Info</strong></header>
+      <strong>Main Contact:</strong><br>
+      <%= @customer.main_contact_name %><br>
+      <%= @customer.main_contact_phone %><br>
+      <%= @customer.main_contact_email %><br>
+      <hr>
+      <strong>Other Contact:</strong><br>
+      <%= @customer.other_contact_name %><br>
+      <%= @customer.other_contact_phone %>
+    </article>
+
+    <article>
+      <header><strong>Notes</strong></header>
+      <p><%= @customer.notes %></p>
+    </article>
+
+  </div>
 </div>
-<br>
-<div>
-  <%= link_to "Edit this customer", edit_customer_path(@customer) %> |
-  <%= link_to "Back to customers", customers_path %>
-
-  <%= button_to "Destroy this customer", @customer, method: :delete %>
-</div>
-
