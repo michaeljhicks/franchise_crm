@@ -2,7 +2,7 @@
 class JobsController < ApplicationController
   before_action :authenticate_user!
 
-  before_action :set_customer_and_machine, except: [:index, :show]
+  before_action :set_customer_and_machine, except: [:index]
   before_action :set_job, only: %i[ show edit update destroy ]
 
   def index

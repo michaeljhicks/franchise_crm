@@ -1,10 +1,32 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @job %>
+<header>
+  <h1>Job for: <%= link_to @job.customer.business_name, @job.customer %></h1>
+  <p>
+    <strong>Type:</strong> <%= @job.job_type.humanize.titleize %> |
+    <strong>Status:</strong> <mark><%= @job.status.humanize.titleize %></mark> |
+    <strong>Scheduled for:</strong> <%= @job.scheduled_date_time ? @job.scheduled_date_time.strftime("%a, %b %d, %Y") : 'Not Scheduled' %>
+  </p>
+</header>
+
+<article>
+  <header><strong>Checklist</strong></header>
+  
+  <% if @job.tasks.any? %>
+    <% @job.tasks.each do |task| %>
+      <div>
+        <%= task.description %>
+      </div>
+      <hr>
+    <% end %>
+  <% else %>
+    <p>No checklist items for this job type.</p>
+  <% end %>
+</article>
+
+<br>
 
 <div>
-  <%= link_to "Edit this job", edit_customer_machine_job_path(@customer, @machine, @job) %> |
-  <%= link_to "Back to jobs for this machine", customer_machine_jobs_path(@customer, @machine) %>
-
-  <%= button_to "Destroy this job", @job, method: :delete %>
+  <%= link_to "Edit this job", edit_customer_machine_job_path(@customer, @machine, @job), class: "secondary" %> |
+  <%= link_to "Back to all jobs", jobs_path %>
 </div>
