@@ -8,13 +8,29 @@ class MachinesController < ApplicationController
   # GET /customers/:customer_id/machines
   def index
     if params[:customer_id]
-      # This is the nested route: /customers/1/machines
+      # Handle the nested case: /customers/1/machines
       @customer = current_user.customers.find(params[:customer_id])
-      @machines = @customer.machines
+      @machines = @customer.machines.includes(:customer) # Eager load for consistency
     else
-      # This is the new top-level route: /machines
-      @machines = current_user.machines
+      # Handle the top-level case: /machines
+      @machines = current_user.machines.includes(:customer)
     end
+
+    # --- Search Logic ---
+    if params[:query].present?
+      search_term = "%#{params[:query]}%"
+      # NOTE: We add .joins(:customer) here. This is the key change.
+      @machines = @machines.joins(:customer).where(
+        "machines.machine_make ILIKE ? OR machines.machine_model ILIKE ? OR machines.machine_serial_number ILIKE ? OR customers.business_name ILIKE ?",
+        search_term, search_term, search_term, search_term
+      )
+    end
+
+    # --- Paginate and Order ---
+    # To order by `customers.business_name`, we MUST have joined the table.
+    # We add `.joins(:customer)` to ensure this is always the case before ordering.
+    final_scope = @machines.joins(:customer).order("customers.business_name ASC, machines.created_at DESC")
+    @pagy, @machines = pagy(final_scope, items: 20)
   end
 
   # GET /customers/:customer_id/machines/:id

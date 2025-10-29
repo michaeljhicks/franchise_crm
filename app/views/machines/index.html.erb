@@ -1,36 +1,60 @@
 
 
-<p style="color: green"><%= notice %></p>
-<p style="color: green"><%= notice %></p>
+<header style="display: flex; justify-content: space-between; align-items: center;">
 
+  <% if @customer.present? %>
+    <h1>Machines for <%= @customer.business_name %></h1>
+    <%= link_to "New Machine", new_customer_machine_path(@customer), role: "button" %>
+  <% else %>
+    <h1>All Machines</h1>
 
-<% if @customer.present? %>
-  <%# This is the nested view for a specific customer %>
-  <% content_for :title, "Machines for #{@customer.business_name}" %>
-  <h1>Machines for <%= @customer.business_name %></h1>
-<% else %>
-  <%# This is the top-level "All Machines" view %>
-  <% content_for :title, "All Machines" %>
-  <h1>All Machines</h1>
-  <p>Showing all machines across all customers.</p>
-<% end %>
-
-
-<div id="machines">
-  <% @machines.each do |machine| %>
-
-    <%= render machine %>
-    <p>
-
-      <%= link_to "Show this machine", customer_machine_path(machine.customer, machine) %>
-    </p>
   <% end %>
-</div>
+</header>
 
 
-
-<% if @customer.present? %>
-  <%= link_to "New machine for this customer", new_customer_machine_path(@customer) %>
-  <br>
-  <%= link_to "Back to customer", @customer %>
+<% unless @customer.present? %>
+  <article>
+    <form action="<%= machines_path %>" method="get">
+      <div class="grid">
+        <input type="search" name="query" placeholder="Search by make, model, serial, or customer..." value="<%= params[:query] %>">
+        <button type="submit">Search</button>
+      </div>
+    </form>
+  </article>
 <% end %>
+
+
+
+<div class="overflow-auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Customer</th>
+        <th>Make & Model</th>
+        <th>Serial Number</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @machines.each do |machine| %>
+        <tr>
+          <td>
+            <strong><%= link_to machine.customer.business_name, machine.customer %></strong>
+          </td>
+          <td><%= machine.machine_make %> <%= machine.machine_model %></td>
+          <td><%= machine.machine_serial_number %></td>
+          <td><%= machine.status %></td>
+          <td>
+            <div role="group">
+
+              <%= link_to "View", customer_machine_path(machine.customer, machine), class: "secondary outline" %>
+              <%= link_to "Edit", edit_customer_machine_path(machine.customer, machine), class: "secondary outline" %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <nav><%== pagy_nav(@pagy) %></nav>
+</div>
