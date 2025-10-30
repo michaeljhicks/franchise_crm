@@ -9,4 +9,13 @@
 <div>
   <%= link_to "Show this job", @job %> |
   <%= link_to "Back to jobs for this machine", customer_machine_jobs_path(@customer, @machine) %>
+
+  <div style="margin-top: 2rem;">
+    <%= button_to "Destroy This Job", 
+                  [@customer, @machine, @job], 
+                  method: :delete, 
+                  form: { data: { turbo_confirm: "Are you sure you want to permanently delete this job?" } },
+                  class: "secondary" 
+    %>
+  </div>
 </div>

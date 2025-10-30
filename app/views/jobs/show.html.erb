@@ -47,4 +47,13 @@
 <div>
   <%= link_to "Edit this job", edit_customer_machine_job_path(@customer, @machine, @job), class: "secondary" %> |
   <%= link_to "Back to all jobs", jobs_path %>
+
+  <div style="margin-top: 2rem;">
+    <%= button_to "Destroy This Job", 
+                  [@customer, @machine, @job], 
+                  method: :delete, 
+                  form: { data: { turbo_confirm: "Are you sure you want to permanently delete this job?" } },
+                  class: "secondary" 
+    %>
+  </div>
 </div>
