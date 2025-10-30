@@ -1,0 +1,10 @@
+Hello <%= @customer.main_contact_name %>,
+
+This email is to notify you that the job '<%= @job.job_type.humanize.titleize %>' scheduled on <%= @job.scheduled_date_time.strftime("%B %d, %Y") %> has been completed.
+
+Completed Tasks:
+<% @completed_tasks.each do |task| %>
+- <%= task.description %>
+<% end %>
+
+Thank you for your business!

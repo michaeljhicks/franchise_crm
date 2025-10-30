@@ -74,6 +74,9 @@ class Job < ApplicationRecord
 
   after_create :create_checklist_tasks
 
+  after_update :send_completion_notification, if: :completed_status_changed?
+
+
   private
 
   def create_checklist_tasks
@@ -84,5 +87,17 @@ class Job < ApplicationRecord
       # Use `create!` to ensure if one fails, the whole process stops.
       self.tasks.create!(description: task_description)
     end
+  end
+
+  def completed_status_changed?
+    # This checks two things:
+    # 1. Did the `status` attribute just change in this update?
+    # 2. Is the new `status` value 'completed'?
+    saved_change_to_status? && status == 'completed'
+  end
+
+  def send_completion_notification
+    # Use `deliver_later` to send the email in a background job for better performance
+    JobMailer.job_completed_notification(self).deliver_later
   end
 end
