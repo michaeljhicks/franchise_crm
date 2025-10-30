@@ -40,22 +40,7 @@
     <%= form.label :internal_notes, style: "display: block" %>
     <%= form.textarea :internal_notes %>
   </div>
-
-  <div>
-    <%= form.label :customer_id, style: "display: block" %>
-    <%= form.text_field :customer_id %>
-  </div>
-
-  <div>
-    <%= form.label :machine_id, style: "display: block" %>
-    <%= form.text_field :machine_id %>
-  </div>
-
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
-  </div>
-
+  
   <div>
     <%= form.label :contractor_id %>
     <%= form.collection_select :contractor_id, Contractor.all, :id, :name, prompt: "Select a contractor" %>
