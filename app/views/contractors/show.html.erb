@@ -1,10 +1,48 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @contractor %>
+<header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+  <div>
+    <h1><%= @contractor.name %></h1>
+    <p><%= @contractor.phone_number %></p>
+  </div>
+  <div>
+    <%= link_to "Edit Contractor", edit_contractor_path(@contractor), role: "button", class: "secondary" %>
+  </div>
+</header>
 
-<div>
-  <%= link_to "Edit this contractor", edit_contractor_path(@contractor) %> |
-  <%= link_to "Back to contractors", contractors_path %>
+<article>
+  <header><strong>Assigned Job History</strong></header>
+  
+  <% if @contractor.jobs.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Machine</th>
+          <th>Job Type</th>
+          <th>Status</th>
+          <th>Scheduled On</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @jobs_for_contractor.order(scheduled_date_time: :desc).each do |job| %>
+          <tr>
+            <td><%= link_to job.customer.business_name, job.customer %></td>
+            <td><%= link_to job.machine.machine_model, customer_machine_path(job.customer, job.machine) %></td>
+            <td><%= job.job_type.humanize.titleize %></td>
+            <td><mark><%= job.status.humanize.titleize %></mark></td>
+            <td><%= job.scheduled_date_time ? job.scheduled_date_time.strftime("%b %d, %Y") : "Not Set" %></td>
+            <td><%= link_to "View Job", job, class: "secondary outline" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>This contractor has not been assigned to any jobs yet.</p>
+  <% end %>
 
-  <%= button_to "Destroy this contractor", @contractor, method: :delete %>
-</div>
+</article>
+
+<br>
+<%= link_to "Back to all contractors", contractors_path %>

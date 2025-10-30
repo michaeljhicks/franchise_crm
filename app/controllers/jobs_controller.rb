@@ -37,11 +37,19 @@ class JobsController < ApplicationController
 
   # app/controllers/jobs_controller.rb
 
+  # app/controllers/jobs_controller.rb
+
   def show
-    # Find the job securely through the current user
-    @job = current_user.jobs.includes(:customer, :machine, :tasks).find(params[:id])
+    # We need to find the job differently depending on the user's role
+    if current_user.admin?
+      # Admins can find any job in the system
+      @job = Job.includes(:customer, :machine, :tasks).find(params[:id])
+    else
+      # Regular users can only find jobs they own
+      @job = current_user.jobs.includes(:customer, :machine, :tasks).find(params[:id])
+    end
     
-    # We need @customer and @machine for the view's links, so we'll get them from the job itself
+    # The rest of the method stays the same, as it's needed for the view
     @customer = @job.customer
     @machine = @job.machine
   end

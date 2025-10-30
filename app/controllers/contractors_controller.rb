@@ -9,7 +9,19 @@ class ContractorsController < ApplicationController
 
   # GET /contractors/1 or /contractors/1.json
   def show
+    # Start with all jobs for this contractor
+    all_jobs = @contractor.jobs
+
+    # Now, filter those jobs based on the current user's role
+    if current_user.admin?
+      # Admins see all jobs for this contractor
+      @jobs_for_contractor = all_jobs
+    else
+      # Franchisees ONLY see jobs they own that are assigned to this contractor
+      @jobs_for_contractor = all_jobs.where(user: current_user)
+    end
   end
+
 
   # GET /contractors/new
   def new
@@ -61,7 +73,7 @@ class ContractorsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_contractor
-      @contractor = Contractor.find(params.expect(:id))
+      @contractor = Contractor.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
