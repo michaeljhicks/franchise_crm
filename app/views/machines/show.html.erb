@@ -1,50 +1,97 @@
 <p style="color: green"><%= notice %></p>
 
-<h1>Machine: <%= @machine.machine_model %></h1>
-<p><%= link_to "Schedule a new job for this machine", new_customer_machine_job_path(@customer, @machine), role: "button" %></p>
-<hr>
+<header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+  <div>
+    <h1><%= @machine.machine_make %> <%= @machine.machine_model %></h1>
+    <p>Belongs to: <%= link_to @machine.customer.business_name, @customer %></p>
+  </div>
+  <div>
+    <%= link_to "Schedule New Job", new_customer_machine_job_path(@customer, @machine), role: "button" %>
+    <%= link_to "Edit Machine", edit_customer_machine_path(@customer, @machine), role: "button", class: "secondary" %>
+  </div>
+</header>
 
-<%= render @machine %>
-<article>
-  <header><strong>Jobs for this Machine</strong></header>
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
 
-  <% if @machine.jobs.any? %>
-    <table>
-      <thead>
-        <tr>
-          <th>Scheduled For</th>
-          <th>Type</th>
-          <th>Status</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @machine.jobs.group_by(&:status).each do |status, jobs| %>
-          <tr>
-            <th colspan="4" style="background-color: #f1f1f1;"><%= status.humanize.titleize %></th>
-          </tr>
-          <% jobs.sort_by(&:scheduled_date_time).reverse.each do |job| %>
-            <tr>
-              <td><%= job.scheduled_date_time ? job.scheduled_date_time.strftime("%a, %b %d, %Y") : "Not Scheduled" %></td>
-              <td><%= job.job_type.humanize.titleize %></td>
-              <td><mark><%= job.status.humanize.titleize %></mark></td>
-              <td>
-                <%= link_to "View Details", customer_machine_job_path(@customer, @machine, job), class: "secondary outline" %>
-              </td>
-            </tr>
-          <% end %>
+  <div class="left-column">
+    
+    <article>
+      <header><strong>Machine Details</strong></header>
+      <div class="grid">
+        <div>
+          <strong>Make:</strong><br>
+          <%= @machine.machine_make %>
+        </div>
+        <div>
+          <strong>Model:</strong><br>
+          <%= @machine.machine_model %>
+        </div>
+        <div>
+          <strong>Serial #:</strong><br>
+          <%= @machine.machine_serial_number %>
+        </div>
+        <div>
+          <strong>Type:</strong><br>
+          <%= @machine.machine_type %>
+        </div>
+      </div>
+      <hr>
+      <div class="grid">
+        <div>
+          <strong>Install Date:</strong><br>
+          <%= @machine.install_date %>
+        </div>
+        <div>
+          <strong>Purchase Date:</strong><br>
+          <%= @machine.purchase_date %>
+        </div>
+        <div>
+          <strong>Status:</strong><br>
+          <%= @machine.status %>
+        </div>
+      </div>
+    </article>
+
+    <article>
+      <header><strong>Bin Details</strong></header>
+      <div class="grid">
+        <div>
+          <strong>Make:</strong><br>
+          <%= @machine.bin_make %>
+        </div>
+        <div>
+          <strong>Model:</strong><br>
+          <%= @machine.bin_model %>
+        </div>
+        <div>
+          <strong>Serial #:</strong><br>
+          <%= @machine.bin_serial_number %>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="right-column">
+    <article>
+      <header><strong>Jobs for this Machine</strong></header>
+      <% if @machine.jobs.any? %>
+        <% @machine.jobs.order(scheduled_date_time: :desc).limit(10).each do |job| %>
+          <p>
+            <strong><%= job.job_type.humanize.titleize %></strong><br>
+            <small>
+              Scheduled: <%= job.scheduled_date_time ? job.scheduled_date_time.strftime("%b %d, %Y") : "TBD" %> |
+              Status: <mark><%= job.status.humanize.titleize %></mark>
+            </small><br>
+            <%= link_to "View Job Details &rarr;".html_safe, customer_machine_job_path(@customer, @machine, job) %>
+          </p>
+          <hr>
         <% end %>
-      </tbody>
-    </table>
-  <% else %>
-    <p>No jobs have been scheduled for this machine yet.</p>
-  <% end %>
-
-</article>
-
-<div>
-  <%= link_to "Edit this machine", edit_customer_machine_path(@customer, @machine) %> |
-  <%= link_to "Back to customer's machines", customer_machines_path(@customer) %>
-  <%= button_to "Destroy this machine", [@customer, @machine], method: :delete %>
+      <% else %>
+        <p>No jobs have been scheduled for this machine yet.</p>
+      <% end %>
+    </article>
+  </div>
 </div>
 
+<br>
+<%= link_to "Back to customer's machines", customer_machines_path(@customer) %>
