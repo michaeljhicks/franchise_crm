@@ -4,6 +4,9 @@
   <div>
     <h1><%= @machine.machine_make %> <%= @machine.machine_model %></h1>
     <p>Belongs to: <%= link_to @machine.customer.business_name, @customer %></p>
+    <p>
+      <strong>Current Lease Rate:</strong> <%= number_to_currency(@machine.lease_rate) %>
+    </p>
   </div>
   <div>
     <%= link_to "Schedule New Job", new_customer_machine_job_path(@customer, @machine), role: "button" %>
@@ -27,6 +30,14 @@
         <div>
           <strong>Equipment Age:</strong><br>
           <%= @machine.age %>
+        </div>
+        <div>
+          <strong>Serial #:</strong><br>
+          <%= @machine.machine_serial_number %>
+        </div>
+        <div>
+          <strong>Warranty Registered:</strong><br>
+          <%= @machine.warranty_registered? ? 'Yes' : 'No' %>
         </div>
       </div>
 

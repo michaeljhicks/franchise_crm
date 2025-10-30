@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_29_202701) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_30_075507) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "assignments", force: :cascade do |t|
+    t.date "start_date"
+    t.date "end_date"
+    t.bigint "machine_id", null: false
+    t.bigint "customer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_assignments_on_customer_id"
+    t.index ["machine_id"], name: "index_assignments_on_machine_id"
+  end
 
   create_table "contractors", force: :cascade do |t|
     t.string "name"
@@ -74,6 +85,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_202701) do
     t.bigint "customer_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "warranty_registered", default: false
+    t.decimal "lease_rate", precision: 8, scale: 2, default: "0.0"
     t.index ["customer_id"], name: "index_machines_on_customer_id"
   end
 
@@ -107,6 +120,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_202701) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "assignments", "customers"
+  add_foreign_key "assignments", "machines"
   add_foreign_key "customers", "users"
   add_foreign_key "jobs", "contractors"
   add_foreign_key "jobs", "customers"

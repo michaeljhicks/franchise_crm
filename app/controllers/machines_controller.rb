@@ -90,7 +90,8 @@ class MachinesController < ApplicationController
       :machine_type, :bin_make, :bin_model, :bin_serial_number,
       :purchase_date, :install_date, :status,
       # ADD THESE VIRTUAL ATTRIBUTES
-      :other_machine_make, :other_machine_type, :other_status
+      :other_machine_make, :other_machine_type, :other_status,
+      :warranty_registered, :lease_rate
     )
   end
 end
