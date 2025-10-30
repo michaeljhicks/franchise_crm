@@ -39,6 +39,10 @@
           <strong>Warranty Registered:</strong><br>
           <%= @machine.warranty_registered? ? 'Yes' : 'No' %>
         </div>
+        <div>
+          <strong>Status:</strong><br>
+          <%= @machine.status %>
+        </div>
       </div>
 
       <div style="margin: 1rem 0;">

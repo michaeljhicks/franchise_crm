@@ -8,6 +8,11 @@
   <div>
     <%= link_to "Edit Customer", edit_customer_path(@customer), role: "button", class: "secondary" %>
     <%= link_to "Back to all customers", customers_path %>
+    <%= button_to "Destroy", @customer, 
+                  method: :delete, 
+                  form: { data: { turbo_confirm: "Are you sure? This will delete the customer AND all associated machines and jobs." } },
+                  class: "contrast"
+    %>
   </div>
 </header>
 

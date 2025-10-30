@@ -9,7 +9,7 @@ class Machine < ApplicationRecord
   # Define the options for our dropdowns
   MACHINE_MAKES = ["Ice-O-Matic", "Hoshizaki", "Manitowoc", "Koolaire", "Other"]
   MACHINE_TYPES = ["Modular", "Undercounter", "Gourmet", "Other"]
-  STATUSES = ["Active", "Inactive", "Sold", "Other"]
+  STATUSES = ["Active", "Inactive", "Boneyard", "Sold", "Other"]
 
   # These are "virtual" attributes, they don't get saved to the database
   # They are used to capture the "Other" value from the form
