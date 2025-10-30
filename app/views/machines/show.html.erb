@@ -2,8 +2,45 @@
 
 <h1>Machine: <%= @machine.machine_model %></h1>
 <p><%= link_to "Schedule a new job for this machine", new_customer_machine_job_path(@customer, @machine), role: "button" %></p>
-<%= render @machine %>
+<hr>
 
+<%= render @machine %>
+<article>
+  <header><strong>Jobs for this Machine</strong></header>
+
+  <% if @machine.jobs.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Scheduled For</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @machine.jobs.group_by(&:status).each do |status, jobs| %>
+          <tr>
+            <th colspan="4" style="background-color: #f1f1f1;"><%= status.humanize.titleize %></th>
+          </tr>
+          <% jobs.sort_by(&:scheduled_date_time).reverse.each do |job| %>
+            <tr>
+              <td><%= job.scheduled_date_time ? job.scheduled_date_time.strftime("%a, %b %d, %Y") : "Not Scheduled" %></td>
+              <td><%= job.job_type.humanize.titleize %></td>
+              <td><mark><%= job.status.humanize.titleize %></mark></td>
+              <td>
+                <%= link_to "View Details", customer_machine_job_path(@customer, @machine, job), class: "secondary outline" %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>No jobs have been scheduled for this machine yet.</p>
+  <% end %>
+
+</article>
 
 <div>
   <%= link_to "Edit this machine", edit_customer_machine_path(@customer, @machine) %> |

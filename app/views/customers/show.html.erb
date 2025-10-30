@@ -36,18 +36,33 @@
 
     <article>
       <header>
-        <strong>Recent Jobs</strong>
+        <strong>All Jobs for this Customer</strong>
       </header>
       <% if @customer.jobs.any? %>
-        <%# Display the 5 most recent jobs %>
-        <% @customer.jobs.order(created_at: :desc).limit(5).each do |job| %>
-          <p>
-            <strong><%= job.job_type.humanize.titleize %> on <%= job.scheduled_date_time ? job.scheduled_date_time.strftime("%b %d, %Y") : "TBD" %></strong><br>
-            <small>Status: <mark><%= job.status.humanize.titleize %></mark></small><br>
-            <%= link_to "View Job", customer_machine_job_path(job.customer, job.machine, job) %>
-          </p>
-          <hr>
-        <% end %>
+        <table>
+          <thead>
+            <tr>
+              <th>Machine</th>
+              <th>Scheduled For</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @customer.jobs.order(scheduled_date_time: :desc).each do |job| %>
+              <tr>
+                <td><%= link_to job.machine.machine_model, customer_machine_path(job.customer, job.machine) %></td>
+                <td><%= job.scheduled_date_time ? job.scheduled_date_time.strftime("%b %d, %Y") : "Not Scheduled" %></td>
+                <td><%= job.job_type.humanize.titleize %></td>
+                <td><mark><%= job.status.humanize.titleize %></mark></td>
+                <td>
+                  <%= link_to "View Details", customer_machine_job_path(job.customer, job.machine, job), class: "secondary outline" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
       <% else %>
         <p>No jobs have been scheduled for this customer yet.</p>
       <% end %>

@@ -80,7 +80,7 @@ class MachinesController < ApplicationController
 
     # This method finds the Machine, ensuring it belongs to the @customer we just found
     def set_machine
-      @machine = @customer.machines.find(params[:id])
+      @machine = @customer.machines.includes(:jobs).find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
