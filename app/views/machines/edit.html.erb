@@ -7,6 +7,6 @@
 <br>
 
 <div>
-  <%= link_to "Show this machine", @machine %> |
-  <%= link_to "Back to machines", machines_path %>
+  <%= link_to "Show this machine", customer_machine_path(@customer, @machine) %> |
+  <%= link_to "Back to machines", customer_machines_path(@customer) %>
 </div>
