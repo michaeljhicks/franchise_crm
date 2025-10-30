@@ -1,0 +1,15 @@
+<%= turbo_frame_tag task do %>
+
+  <%= form_with(model: task, url: toggle_task_path(task), method: :patch) do |form| %>
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0;">
+      <div style="text-decoration: <%= task.completed_at? ? 'line-through' : 'none' %>; color: <%= task.completed_at? ? '#6B7280' : 'inherit' %>;">
+        <%= form.check_box :completed, { checked: task.completed_at? } %>
+        <%= form.label :completed, task.description, style: "margin-bottom: 0; margin-left: 0.5rem;" %>
+      </div>
+
+
+      <%= form.submit "Update", class: "secondary outline" %>
+    </div>
+  <% end %>
+  <hr>
+<% end %>

@@ -7,4 +7,5 @@ class User < ApplicationRecord
   has_many :customers, dependent: :destroy
   has_many :machines, through: :customers
   has_many :jobs, dependent: :destroy
+  has_many :tasks, through: :jobs
 end

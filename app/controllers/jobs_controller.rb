@@ -99,6 +99,11 @@ class JobsController < ApplicationController
   end
 
     def job_params
-      params.require(:job).permit(:scheduled_date_time, :completed_date_time, :job_type, :status, :contractor_notes, :internal_notes, :contractor_id)
+      params.require(:job).permit(
+        :scheduled_date_time, :completed_date_time, :job_type, :status,
+        :contractor_notes, :internal_notes, :contractor_id,
+        # ADD THIS LINE for nested tasks:
+        tasks_attributes: [:id, :completed]
+      )
     end
 end

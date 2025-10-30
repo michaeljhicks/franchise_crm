@@ -18,6 +18,11 @@ Rails.application.routes.draw do
   end
 
   resources :jobs, only: [:index, :show]
+  resources :tasks, only: [] do
+    member do
+      patch :toggle # This will create a route like /tasks/:id/toggle
+    end
+  end
 
   # root "customers#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

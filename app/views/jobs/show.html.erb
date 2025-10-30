@@ -9,20 +9,38 @@
   </p>
 </header>
 
-<article>
-  <header><strong>Checklist</strong></header>
-  
-  <% if @job.tasks.any? %>
-    <% @job.tasks.each do |task| %>
-      <div>
-        <%= task.description %>
-      </div>
-      <hr>
+
+
+<%= form_with(model: [@customer, @machine, @job]) do |form| %>
+  <article>
+    <header><strong>Checklist</strong></header>
+
+    <% if @job.tasks.any? %>
+      <%= form.fields_for :tasks do |task_form| %>
+        <div style="display: flex; align-items: center; gap: 1rem; text-decoration: <%= task_form.object.completed_at? ? 'line-through' : 'none' %>; color: <%= task_form.object.completed_at? ? '#6B7280' : 'inherit' %>;">
+          <%= task_form.check_box :completed %>
+          <%= task_form.label :completed, task_form.object.description, style: "margin-bottom: 0;" %>
+        </div>
+        
+        <%# Put the <hr> before the end tag %>
+        <hr> 
+      <% end %> <%# The 'end' for the loop goes here %>
+    <% else %>
+      <p>No checklist items for this job type.</p>
     <% end %>
-  <% else %>
-    <p>No checklist items for this job type.</p>
-  <% end %>
-</article>
+
+    <hr style="margin-top: 2rem;">
+    <div>
+      <%= form.label :contractor_notes, "Notes" %>
+      <%= form.text_area :contractor_notes, rows: 4 %>
+    </div>
+    
+  </article>
+
+  <div style="margin-top: 1rem;">
+    <%= form.submit "Update Job Checklist" %>
+  </div>
+<% end %>
 
 <br>
 
