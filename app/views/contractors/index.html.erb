@@ -1,16 +1,25 @@
 <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Contractors" %>
+<header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+  <h1>Contractors</h1>
+  <%= link_to "New Contractor", new_contractor_path, role: "button" %>
+</header>
 
-<h1>Contractors</h1>
 
-<div id="contractors">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
   <% @contractors.each do |contractor| %>
-    <%= render contractor %>
-    <p>
-      <%= link_to "Show this contractor", contractor %>
-    </p>
+    <article>
+      <header>
+        <strong><%= contractor.name %></strong>
+      </header>
+      <p>Phone: <%= contractor.phone_number %></p>
+      <footer>
+        <%= link_to "View Details", contractor, class: "secondary outline" %>
+        <%= link_to "Edit", edit_contractor_path(contractor), class: "secondary outline" %>
+      </footer>
+    </article>
   <% end %>
 </div>
 
-<%= link_to "New contractor", new_contractor_path %>
+<br>
+<nav><%== pagy_nav(@pagy) %></nav>

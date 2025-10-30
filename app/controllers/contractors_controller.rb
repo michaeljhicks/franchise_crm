@@ -1,9 +1,10 @@
 class ContractorsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_contractor, only: %i[ show edit update destroy ]
 
   # GET /contractors or /contractors.json
   def index
-    @contractors = Contractor.all
+    @pagy, @contractors = pagy(Contractor.all.order(:name), items: 12)
   end
 
   # GET /contractors/1 or /contractors/1.json
