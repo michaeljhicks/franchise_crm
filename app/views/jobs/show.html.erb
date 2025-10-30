@@ -4,7 +4,7 @@
   <h1>Job for: <%= link_to @job.customer.business_name, @job.customer %></h1>
   <p>
     <strong>Type:</strong> <%= @job.job_type.humanize.titleize %> |
-    <strong>Status:</strong> <mark><%= @job.status.humanize.titleize %></mark> |
+     <strong>Status:</strong> <%== status_badge(@job) %> |
     <strong>Scheduled for:</strong> <%= @job.scheduled_date_time ? @job.scheduled_date_time.strftime("%a, %b %d, %Y") : 'Not Scheduled' %>
   </p>
 </header>

@@ -55,7 +55,7 @@
                 <td><%= link_to job.machine.machine_model, customer_machine_path(job.customer, job.machine) %></td>
                 <td><%= job.scheduled_date_time ? job.scheduled_date_time.strftime("%b %d, %Y") : "Not Scheduled" %></td>
                 <td><%= job.job_type.humanize.titleize %></td>
-                <td><mark><%= job.status.humanize.titleize %></mark></td>
+                <td><%== status_badge(job) %></td>
                 <td>
                   <%= link_to "View Details", customer_machine_job_path(job.customer, job.machine, job), class: "secondary outline" %>
                 </td>

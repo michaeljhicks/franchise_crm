@@ -105,7 +105,7 @@
             <strong><%= job.job_type.humanize.titleize %></strong><br>
             <small>
               Scheduled: <%= job.scheduled_date_time ? job.scheduled_date_time.strftime("%b %d, %Y") : "TBD" %> |
-              Status: <mark><%= job.status.humanize.titleize %></mark>
+               Status: <%== status_badge(job) %>
             </small><br>
             <%= link_to "View Job Details &rarr;".html_safe, customer_machine_job_path(@customer, @machine, job) %>
           </p>

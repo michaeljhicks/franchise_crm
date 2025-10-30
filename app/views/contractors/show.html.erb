@@ -31,7 +31,7 @@
             <td><%= link_to job.customer.business_name, job.customer %></td>
             <td><%= link_to job.machine.machine_model, customer_machine_path(job.customer, job.machine) %></td>
             <td><%= job.job_type.humanize.titleize %></td>
-            <td><mark><%= job.status.humanize.titleize %></mark></td>
+            <td><%== status_badge(job) %></td>
             <td><%= job.scheduled_date_time ? job.scheduled_date_time.strftime("%b %d, %Y") : "Not Set" %></td>
             <td><%= link_to "View Job", job, class: "secondary outline" %></td>
           </tr>
