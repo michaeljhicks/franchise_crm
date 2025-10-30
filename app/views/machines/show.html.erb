@@ -15,39 +15,53 @@
 
   <div class="left-column">
     
+
     <article>
-      <header><strong>Machine Details</strong></header>
+      <header><strong>Machine Overview</strong></header>
+
       <div class="grid">
         <div>
-          <strong>Make:</strong><br>
-          <%= @machine.machine_make %>
+          <strong>Current Customer:</strong><br>
+          <%= link_to @machine.customer.business_name, @machine.customer %>
         </div>
         <div>
-          <strong>Model:</strong><br>
-          <%= @machine.machine_model %>
-        </div>
-        <div>
-          <strong>Serial #:</strong><br>
-          <%= @machine.machine_serial_number %>
-        </div>
-        <div>
-          <strong>Type:</strong><br>
-          <%= @machine.machine_type %>
+          <strong>Equipment Age:</strong><br>
+          <%= @machine.age %>
         </div>
       </div>
+
+      <div style="margin: 1rem 0;">
+        <% if (last_job = @machine.last_completed_job).present? %>
+          <p>
+            <strong>Last Job:</strong> 
+            <%= last_job.job_type.humanize.titleize %> | 
+            <%= last_job.completed_date_time&.strftime("%b %d, %Y") %>
+          </p>
+        <% end %>
+
+        <% if (next_job = @machine.next_scheduled_job).present? %>
+          <p>
+            <strong>Next Job:</strong> 
+            <%= next_job.job_type.humanize.titleize %> | 
+            <%= next_job.scheduled_date_time&.strftime("%b %d, %Y") %>
+          </p>
+        <% end %>
+      </div>
+
       <hr>
+
       <div class="grid">
         <div>
-          <strong>Install Date:</strong><br>
-          <%= @machine.install_date %>
+          <strong>Total PMs:</strong><br>
+          <%= @machine.preventive_maintenance_jobs_count %>
         </div>
         <div>
-          <strong>Purchase Date:</strong><br>
-          <%= @machine.purchase_date %>
+          <strong>Total Repairs:</strong><br>
+          <%= @machine.repair_jobs_count %>
         </div>
         <div>
-          <strong>Status:</strong><br>
-          <%= @machine.status %>
+          <strong>Total Installs:</strong><br>
+          <%= @machine.new_installation_jobs_count %>
         </div>
       </div>
     </article>

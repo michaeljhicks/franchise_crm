@@ -22,6 +22,8 @@ class Job < ApplicationRecord
     cancelled: 3
   }
 
+  validates :completed_date_time, presence: true, if: :completed?
+
   ACCOUNT_CLOSURE_TASKS = [
     "Recurring Payment Cancelled", "QuickBooks Account Marked Closed/Inactive",
     "Service Team Notified", "Account Sent to Collections", "Inactive Equipment List Updated", "NOTES"
