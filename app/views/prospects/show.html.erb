@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @prospect %>
+
+<div>
+  <%= link_to "Edit this prospect", edit_prospect_path(@prospect) %> |
+  <%= link_to "Back to prospects", prospects_path %>
+
+  <%= button_to "Destroy this prospect", @prospect, method: :delete %>
+</div>

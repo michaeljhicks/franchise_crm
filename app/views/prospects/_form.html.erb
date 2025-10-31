@@ -1,0 +1,77 @@
+<%= form_with(model: prospect) do |form| %>
+  <% if prospect.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(prospect.errors.count, "error") %> prohibited this prospect from being saved:</h2>
+
+      <ul>
+        <% prospect.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :contact_name, style: "display: block" %>
+    <%= form.text_field :contact_name %>
+  </div>
+
+  <div>
+    <%= form.label :business_name, style: "display: block" %>
+    <%= form.text_field :business_name %>
+  </div>
+
+  <div>
+    <%= form.label :business_location, style: "display: block" %>
+    <%= form.text_field :business_location %>
+  </div>
+
+  <div>
+    <%= form.label :email, style: "display: block" %>
+    <%= form.text_field :email %>
+  </div>
+
+  <div>
+    <%= form.label :phone, style: "display: block" %>
+    <%= form.text_field :phone %>
+  </div>
+
+  <div>
+    <%= form.label :notes, style: "display: block" %>
+    <%= form.textarea :notes %>
+  </div>
+
+  <div>
+    <%= form.label :business_type, style: "display: block" %>
+    <%= form.textarea :business_type %>
+  </div>
+
+  <div>
+    <%= form.label :hours, style: "display: block" %>
+    <%= form.textarea :hours %>
+  </div>
+
+  <div>
+    <%= form.label :ice_usage, style: "display: block" %>
+    <%= form.textarea :ice_usage %>
+  </div>
+
+  <div>
+    <%= form.label :ice_shape, style: "display: block" %>
+    <%= form.textarea :ice_shape %>
+  </div>
+
+  <div>
+    <%= form.label :seating_capacity, style: "display: block" %>
+    <%= form.textarea :seating_capacity %>
+  </div>
+
+  <div>
+    <%= form.label :special_circumstances, style: "display: block" %>
+    <%= form.textarea :special_circumstances %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

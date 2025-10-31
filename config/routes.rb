@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :prospects
   devise_for :users
   root "dashboard#index"
   namespace :admin do
@@ -23,6 +24,11 @@ Rails.application.routes.draw do
   resources :tasks, only: [] do
     member do
       patch :toggle # This will create a route like /tasks/:id/toggle
+    end
+  end
+  resources :prospects do
+    member do
+      post :convert # Creates a path like /prospects/:id/convert
     end
   end
 

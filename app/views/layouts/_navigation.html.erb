@@ -6,6 +6,8 @@
       <%= link_to "All Machines", machines_path, style: "margin-right: 20px; text-decoration: none;" %>      
       <%= link_to "All Jobs", jobs_path, style: "margin-right: 20px; text-decoration: none;" %>
       <%= link_to "Contractors", contractors_path, style: "margin-right: 20px; text-decoration: none;" %>
+      <%= link_to "Prospects", prospects_path, style: "..." %>
+      <%= link_to "Lead Capture", new_prospect_path, style: "margin-right: 20px; text-decoration: none; font-weight: bold;" %>
       <%= link_to "Boneyard", boneyard_machines_path, style: "margin-right: 20px; text-decoration: none;" %>
       <% if current_user.admin? %>
         <%= link_to "Admin Dashboard", admin_root_path, style: "font-weight: bold; color: #d32f2f;" %>

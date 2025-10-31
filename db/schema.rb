@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_30_090002) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_31_171205) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -90,6 +90,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_30_090002) do
     t.index ["customer_id"], name: "index_machines_on_customer_id"
   end
 
+  create_table "prospects", force: :cascade do |t|
+    t.string "contact_name"
+    t.string "business_name"
+    t.string "business_location"
+    t.string "email"
+    t.string "phone"
+    t.text "notes"
+    t.text "business_type"
+    t.text "hours"
+    t.text "ice_usage"
+    t.text "ice_shape"
+    t.text "seating_capacity"
+    t.text "special_circumstances"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_prospects_on_user_id"
+  end
+
   create_table "tasks", force: :cascade do |t|
     t.string "description"
     t.datetime "completed_at"
@@ -128,5 +147,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_30_090002) do
   add_foreign_key "jobs", "machines"
   add_foreign_key "jobs", "users"
   add_foreign_key "machines", "customers"
+  add_foreign_key "prospects", "users"
   add_foreign_key "tasks", "jobs"
 end

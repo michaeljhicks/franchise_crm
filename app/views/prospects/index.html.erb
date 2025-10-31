@@ -1,0 +1,32 @@
+<header style="display: flex; justify-content: space-between; align-items: center;">
+  <h1>Prospects</h1>
+  <%= link_to "New Prospect (Lead Capture)", new_prospect_path, role: "button" %>
+</header>
+
+<div class="overflow-auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Business Name</th>
+        <th>Contact</th>
+        <th>Location</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @prospects.each do |prospect| %>
+        <tr>
+          <td><%= prospect.business_name %></td>
+          <td><%= prospect.contact_name %></td>
+          <td><%= prospect.business_location %></td>
+          <td>
+            <div role="group">
+              <%= link_to "View", prospect, class: "secondary outline" %>
+              <%= button_to "Convert to Customer", convert_prospect_path(prospect), method: :post, class: "contrast", form: { data: { turbo_confirm: "Are you sure you want to convert this prospect into a customer? This will delete the prospect record." } } %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
