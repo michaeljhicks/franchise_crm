@@ -34,7 +34,6 @@ class MachinesController < ApplicationController
   end
 
   def boneyard
-    # Find all machines scoped to the current user with the status "Boneyard"
     boneyard_machines = current_user.machines
                                     .includes(:customer)
                                     .where(status: "Boneyard")

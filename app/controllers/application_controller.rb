@@ -1,18 +1,28 @@
+# app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
   include Pagy::Backend
-  allow_browser versions: :modern
-  # Run this extra configuration only when we are on a Devise page (like login or sign up)
+
+  layout :layout_by_resource
+
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   protected
 
-  # This method tells Devise which extra fields to accept
   def configure_permitted_parameters
-    # Fields allowed during sign up (registration)
+    # ... your devise sanitizer code ...
     devise_parameter_sanitizer.permit(:sign_up, keys: [:owner_name, :franchise_location, :franchise_phone])
-
-    # Fields allowed when editing your profile (account update)
-    # We permit ALL the custom fields here.
     devise_parameter_sanitizer.permit(:account_update, keys: [:owner_name, :franchise_location, :franchise_phone, :address, :city, :state, :zip_code])
+  end
+
+  private
+
+  def layout_by_resource
+    # If a user is signed in, use the main dashboard layout.
+    # Otherwise (for login, signup, etc.), use the simple application layout.
+    if user_signed_in?
+      "dashboard"
+    else
+      "application"
+    end
   end
 end

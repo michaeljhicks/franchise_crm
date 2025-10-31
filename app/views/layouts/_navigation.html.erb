@@ -1,28 +1,52 @@
-<nav style="background-color: #f8f9fa; padding: 1rem; border-bottom: 1px solid #dee2e6; margin-bottom: 2rem;">
+<nav style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem;">
+  
+  <%# --- Left Side: Logo and Main App Links --- %>
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <%= link_to root_path do %>
+      <%= image_tag "logo.svg", style: "height: 40px; width: auto; display: block;" %>
+    <% end %>
+
+    <% if user_signed_in? %>
+      <span>
+        <%= link_to "Dashboard", root_path %>
+        <%= link_to "Customers", customers_path %>
+        <%= link_to "Machines", machines_path %>
+        <%= link_to "Boneyard", boneyard_machines_path %>
+        <%= link_to "Jobs", jobs_path %>
+        <%= link_to "Contractors", contractors_path %>
+        <%= link_to "Prospects", prospects_path %>
+        <%= link_to "Lead Capture", new_prospect_path %>
+      </span>
+    <% end %>
+  </div>
+
+  <%# --- Right Side: User Menu --- %>
   <% if user_signed_in? %>
-    <span>
-      <%= link_to "Dashboard", root_path, style: "margin-right: 20px; font-weight: bold;" %>
-      <%= link_to "Customers", customers_path, style: "margin-right: 20px; text-decoration: none;" %>
-      <%= link_to "All Machines", machines_path, style: "margin-right: 20px; text-decoration: none;" %>      
-      <%= link_to "All Jobs", jobs_path, style: "margin-right: 20px; text-decoration: none;" %>
-      <%= link_to "Contractors", contractors_path, style: "margin-right: 20px; text-decoration: none;" %>
-      <%= link_to "Prospects", prospects_path, style: "..." %>
-      <%= link_to "Lead Capture", new_prospect_path, style: "margin-right: 20px; text-decoration: none; font-weight: bold;" %>
-      <%= link_to "Boneyard", boneyard_machines_path, style: "margin-right: 20px; text-decoration: none;" %>
+    <div style="display: flex; align-items: center; gap: 1rem;">
       <% if current_user.admin? %>
-        <%= link_to "Admin Dashboard", admin_root_path, style: "font-weight: bold; color: #d32f2f;" %>
+        <%= link_to "Admin", admin_root_path %>
       <% end %>
-    </span>
-
-    <span style="float: right;">
-      Logged in as: <strong><%= link_to current_user.email, edit_user_registration_path %></strong>
-      <%= button_to "Log Out", destroy_user_session_path, method: :delete, form: { style: 'display: inline; margin-left: 20px;' } %>
-    </span>
-
-  <% else %>
-    <span>
-      <%= link_to "Log In", new_user_session_path, style: "margin-right: 20px; text-decoration: none;" %>
-      <%= link_to "Sign Up", new_user_registration_path, style: "text-decoration: none;" %>
-    </span>
+      <span><%= link_to current_user.email, edit_user_registration_path %></span>
+      <%= button_to "Log Out", destroy_user_session_path, method: 'delete', class: 'logout-button', form_class: 'logout-form' %>
+    </div>
   <% end %>
 </nav>
+
+
+<style>
+  nav a {
+    margin-right: 15px;
+    text-decoration: none;
+  }
+  .logout-form {
+    margin: 0;
+  }
+  .logout-button {
+    background-color: #f3f4f6; color: #374151; border: 1px solid #d1d5db;
+    padding: 0.25rem 0.75rem; font-size: 0.875rem; border-radius: 0.375rem;
+    cursor: pointer; line-height: inherit; white-space: nowrap;
+  }
+  .logout-button:hover {
+    background-color: #e5e7eb;
+  }
+</style>

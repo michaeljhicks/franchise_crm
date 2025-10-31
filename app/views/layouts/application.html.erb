@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Franchise Crm" %></title>
+    <title><%= content_for(:title) || "Franchise CRM" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -11,33 +11,43 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <%= render 'layouts/navigation' %> <%# ADD THIS LINE %>
 
-    <main class="container">
+
+
+    <main class="container" style="max-width: 500px; margin-top: 5rem; text-align: center;">
+      
+
+      <div>
+
+        <%= link_to new_user_session_path do %>
+          <%= image_tag "logo.svg", style: "height: 60px; width: auto; margin-bottom: 2rem;" %>
+        <% end %>
+      </div>
+      
+
       <% if notice %>
-        <div class="notice" style="background-color: #d4edda; color: #155724; padding: 1rem; border-radius: 0.25rem; margin-bottom: 1rem;">
+        <div class="notice" style="background-color: #d4edda; color: #155724; padding: 1rem; border-radius: 0.25rem; margin-bottom: 1rem; text-align: left;">
           <%= notice %>
         </div>
       <% end %>
-
       <% if alert %>
-        <div class="alert" style="background-color: #f8d7da; color: #721c24; padding: 1rem; border-radius: 0.25rem; margin-bottom: 1rem;">
+        <div class="alert" style="background-color: #f8d7da; color: #721c24; padding: 1rem; border-radius: 0.25rem; margin-bottom: 1rem; text-align: left;">
           <%= alert %>
         </div>
       <% end %>
+
+
       <%= yield %>
     </main>
   </body>

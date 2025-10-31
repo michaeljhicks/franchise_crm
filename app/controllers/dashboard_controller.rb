@@ -16,7 +16,7 @@ class DashboardController < ApplicationController
 
 
     # --- Query for the jobs in each range ---
-    # Find all jobs scheduled for this month, ordered by date
+
     @this_months_jobs = current_user.jobs
                                     .where(scheduled_date_time: this_month_range)
                                     .order(:scheduled_date_time)
@@ -26,12 +26,12 @@ class DashboardController < ApplicationController
     @uncompleted_jobs_this_month = @this_months_jobs
                                       .where.not(status: [:completed, :cancelled])
 
-    # Find all jobs scheduled for next month
+
     @next_months_jobs = current_user.jobs
                                     .where(scheduled_date_time: next_month_range)
                                     .order(:scheduled_date_time)
                                     
-    # Find all jobs for the month after next
+
     @month_after_next_jobs = current_user.jobs
                                           .where(scheduled_date_time: month_after_next_range)
                                           .order(:scheduled_date_time)
