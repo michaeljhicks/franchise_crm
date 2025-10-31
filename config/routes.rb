@@ -10,7 +10,9 @@ Rails.application.routes.draw do
       resources :jobs
     end
   end
-  resources :machines, only: [:index]
+  resources :machines, only: [:index] do
+    get :boneyard, on: :collection
+  end
   resources :contractors
 
   namespace :admin do

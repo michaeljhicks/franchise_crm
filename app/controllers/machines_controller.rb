@@ -2,7 +2,7 @@
 
 class MachinesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_customer, except: [:index]
+  before_action :set_customer, except: [:index, :boneyard]
   before_action :set_machine, only: %i[ show edit update destroy ]
 
   # GET /customers/:customer_id/machines
@@ -31,6 +31,16 @@ class MachinesController < ApplicationController
     # We add `.joins(:customer)` to ensure this is always the case before ordering.
     final_scope = @machines.joins(:customer).order("customers.business_name ASC, machines.created_at DESC")
     @pagy, @machines = pagy(final_scope, items: 20)
+  end
+
+  def boneyard
+    # Find all machines scoped to the current user with the status "Boneyard"
+    boneyard_machines = current_user.machines
+                                    .includes(:customer)
+                                    .where(status: "Boneyard")
+
+    # Paginate the results, just like on our other index pages
+    @pagy, @machines = pagy(boneyard_machines.order("customers.business_name ASC"), items: 20)
   end
 
   # GET /customers/:customer_id/machines/:id

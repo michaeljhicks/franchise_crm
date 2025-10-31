@@ -1,0 +1,38 @@
+
+
+<header style="display: flex; justify-content: space-between; align-items: center;">
+  <h1>Boneyard</h1>
+</header>
+
+<div class="overflow-auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Current Customer</th>
+        <th>Make & Model</th>
+        <th>Serial Number</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @machines.each do |machine| %>
+        <% if machine.customer %> 
+          <tr>
+            <td><strong><%= link_to machine.customer.business_name, machine.customer %></strong></td>
+            <td><%= machine.machine_make %> <%= machine.machine_model %></td>
+            <td><%= machine.machine_serial_number %></td>
+            <td><%= machine.status %></td>
+            <td>
+              <div role="group">
+                <%= link_to "View", customer_machine_path(machine.customer, machine), class: "secondary outline" %>
+                <%= link_to "Edit", edit_customer_machine_path(machine.customer, machine), class: "secondary outline" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+  <nav><%== pagy_nav(@pagy) %></nav>
+</div>
