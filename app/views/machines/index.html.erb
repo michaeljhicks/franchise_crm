@@ -6,7 +6,14 @@
     <h1>Machines for <%= @customer.business_name %></h1>
     <%= link_to "New Machine", new_customer_machine_path(@customer), role: "button" %>
   <% else %>
-    <h1>Machines</h1>
+    <div>
+      <h1>Machines</h1>
+      <p style="margin-top: -1rem; color: #57606a;">
+        <%= link_to "Active: #{@active_machines_count}", machines_path(status: 'Active') %> | 
+        <%= link_to "Inactive: #{@inactive_machines_count}", machines_path(status: 'Inactive') %> | 
+        <%= link_to "Boneyard: #{@boneyard_machines_count}", machines_path(status: 'Boneyard') %>
+      </p>
+    </div>
 
   <% end %>
 </header>

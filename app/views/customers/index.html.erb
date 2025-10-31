@@ -1,7 +1,15 @@
-<header style="display: flex; justify-content: space-between; align-items: center;">
-  <h1>Customers</h1>
-  <%= link_to "New customer", new_customer_path, role: "button" %>
+<header style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+  <div>
+    <h1>Customers</h1>
+    <p style="margin-top: -1rem; color: #57606a;">
+      <strong>Total Customers:</strong> <%= @total_customers %>
+    </p>
+  </div>
+  <div>
+    <%= link_to "New customer", new_customer_path, role: "button" %>
+  </div>
 </header>
+
 
 <article>
   <form action="<%= customers_path %>" method="get">

@@ -6,6 +6,7 @@ class CustomersController < ApplicationController
   def index
     # Start with the base scope of the current user's customers
     customers = current_user.customers
+    @total_customers = customers.count
 
     if params[:query].present?
       # If a search query is present, filter the results
