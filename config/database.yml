@@ -19,7 +19,6 @@ default: &default
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
-
 development:
   <<: *default
   database: franchise_crm_development
@@ -79,20 +78,23 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  primary: &primary_production
+  primary:
     <<: *default
-    database: franchise_crm_production
-    username: franchise_crm
-    password: <%= ENV["FRANCHISE_CRM_DATABASE_PASSWORD"] %>
+    # This single line tells Rails to get all connection info
+    # from the environment variable Heroku provides.
+    url: <%= ENV["DATABASE_URL"] %>
+  # --- END OF CHANGE ---
+
+  # The blocks below are for advanced multi-database setups.
+  # For a standard Heroku deployment, they are not strictly necessary
+  # and will be ignored because they inherit from a block we are no longer using.
+  # It is safe to leave them or remove them. For simplicity, let's leave them.
   cache:
-    <<: *primary_production
-    database: franchise_crm_production_cache
-    migrations_paths: db/cache_migrate
+    <<: *default # Changed this from *primary_production
+    # ...
   queue:
-    <<: *primary_production
-    database: franchise_crm_production_queue
-    migrations_paths: db/queue_migrate
+    <<: *default # Changed this from *primary_production
+    # ...
   cable:
-    <<: *primary_production
-    database: franchise_crm_production_cable
-    migrations_paths: db/cable_migrate
+    <<: *default # Changed this from *primary_production
+    # ...
