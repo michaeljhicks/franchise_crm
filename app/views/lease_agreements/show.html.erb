@@ -1,10 +1,46 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @lease_agreement %>
+<header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+  <div>
+    <h1>Lease Agreement Details</h1>
+    <p>
+      For <strong><%= link_to @lease_agreement.customer.business_name, @lease_agreement.customer %></strong> | 
+      Machine: <strong><%= link_to @lease_agreement.machine.machine_model, customer_machine_path(@lease_agreement.customer, @lease_agreement.machine) %></strong>
+    </p>
+  </div>
+  <div>
+    <%= link_to "Edit this lease agreement", edit_lease_agreement_path(@lease_agreement), role: "button", class: "secondary" %>
+  </div>
+</header>
+
+
+<article>
+  <div class="grid">
+    <div>
+      <strong>Start Date:</strong><br>
+      <%= @lease_agreement.lease_start_date&.strftime("%B %d, %Y") %>
+    </div>
+    <div>
+      <strong>End Date:</strong><br>
+      <%= @lease_agreement.lease_end_date&.strftime("%B %d, %Y") || 'Active / No End Date' %>
+    </div>
+    <div>
+      <strong>Monthly Lease Rate:</strong><br>
+      <%= number_to_currency(@lease_agreement.lease_rate) %>
+    </div>
+  </div>
+</article>
+
+<br>
 
 <div>
-  <%= link_to "Edit this lease agreement", edit_lease_agreement_path(@lease_agreement) %> |
   <%= link_to "Back to lease agreements", lease_agreements_path %>
 
-  <%= button_to "Destroy this lease agreement", @lease_agreement, method: :delete %>
+  <div style="margin-top: 2rem;">
+    <%= button_to "Destroy this lease agreement", @lease_agreement, 
+                  method: :delete, 
+                  form: { data: { turbo_confirm: "Are you sure you want to permanently delete this lease agreement?" } },
+                  class: "contrast" 
+    %>
+  </div>
 </div>

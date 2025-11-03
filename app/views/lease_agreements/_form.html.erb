@@ -27,11 +27,6 @@
   </div>
 
   <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
-  </div>
-
-  <div>
     <%= form.label :customer_id %>
     <%= form.collection_select :customer_id, @customers, :id, :business_name, prompt: "Select a customer" %>
   </div>

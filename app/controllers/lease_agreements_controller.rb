@@ -26,10 +26,15 @@ class LeaseAgreementsController < ApplicationController
   end
 
   def create
+    # This line automatically sets the user_id for the new lease agreement
     @lease_agreement = current_user.lease_agreements.build(lease_agreement_params)
+
     if @lease_agreement.save
       redirect_to @lease_agreement, notice: "Lease agreement was successfully created."
     else
+      # If the save fails, we need to reload the collections for the form
+      @customers = current_user.customers.order(:business_name)
+      @machines = current_user.machines.order(:machine_model)
       render :new, status: :unprocessable_entity
     end
   end
@@ -59,7 +64,7 @@ class LeaseAgreementsController < ApplicationController
 
   private
     def set_lease_agreement
-      @lease_agreement = current_user.lease_agreements.find(params[:id])
+      @lease_agreement = current_user.lease_agreements.includes(:customer, :machine).find(params[:id])
     end
 
     def lease_agreement_params
