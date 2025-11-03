@@ -7,6 +7,9 @@
      <strong>Status:</strong> <%== status_badge(@job) %> |
     <strong>Scheduled for:</strong> <%= @job.scheduled_date_time ? @job.scheduled_date_time.strftime("%a, %b %d, %Y") : 'Not Scheduled' %>
   </p>
+  <% unless @job.completed? || @job.cancelled? %>
+    <%= button_to "Mark as Completed", complete_job_path(@job), method: :patch, data: { turbo_confirm: "This will mark the job as completed with today's date and time. Are you sure?" } %>
+  <% end %>
 </header>
 
 

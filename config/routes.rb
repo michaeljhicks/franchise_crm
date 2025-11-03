@@ -20,7 +20,12 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
   end
 
-  resources :jobs, only: [:index, :show]
+  resources :jobs, only: [:index, :show] do
+    member do
+      patch :complete
+      get :reschedule # Creates GET /jobs/:id/reschedule
+    end
+  end
   resources :tasks, only: [] do
     member do
       patch :toggle # This will create a route like /tasks/:id/toggle

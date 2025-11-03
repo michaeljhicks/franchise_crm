@@ -14,10 +14,15 @@
     <%= f.label :owner_name %>
     <%= f.text_field :owner_name %>
   </div>
-
+  
   <div>
     <%= f.label :franchise_location %>
     <%= f.text_field :franchise_location %>
+  </div>
+
+  <div>
+    <%= f.label :time_zone %>
+    <%= f.time_zone_select :time_zone, nil, default: "Mountain Time (US & Canada)" %>
   </div>
 
   <div>

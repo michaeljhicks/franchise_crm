@@ -1,0 +1,33 @@
+<header>
+  <h1>Job Completed!</h1>
+  <p style="color: green"><%= notice %></p>
+  <p>
+    The job '<%= @job.job_type.humanize.titleize %>' for <strong><%= @job.customer.business_name %></strong> has been marked as completed.
+  </p>
+</header>
+
+<article>
+  <header>
+    <strong>Schedule the Next Job?</strong>
+  </header>
+  <p>Would you like to schedule the next occurrence for this job? (e.g., the next Preventive Maintenance)</p>
+
+  <%= form_with(url: customer_machine_jobs_path(@job.customer, @job.machine), scope: :job, method: :post) do |form| %>
+    
+    <%= form.hidden_field :job_type, value: @job.job_type %>
+    <%= form.hidden_field :contractor_id, value: @job.contractor_id %>
+
+    <div class="grid">
+      <div>
+        <%= form.label :scheduled_date_time %>
+        <%= form.datetime_field :scheduled_date_time, value: 6.months.from_now.strftime('%Y-%m-%dT%H:%M') %>
+      </div>
+    </div>
+
+    <footer style="display: flex; justify-content: space-between; align-items: center;">
+      <%= link_to "No, this was a one-time job", jobs_path, role: "button", class: "secondary" %>
+
+      <%= form.submit "Schedule Next Job" %>
+    </footer>
+  <% end %>
+</article>
