@@ -43,7 +43,7 @@
   
   <div>
     <%= form.label :contractor_id %>
-    <%= form.collection_select :contractor_id, Contractor.all, :id, :name, prompt: "Select a contractor" %>
+    <%= form.collection_select :contractor_id, @contractors, :id, :name, prompt: "Select a contractor" %>
   </div>
 
   <div>

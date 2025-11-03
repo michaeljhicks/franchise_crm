@@ -9,4 +9,5 @@ class User < ApplicationRecord
   has_many :jobs, dependent: :destroy
   has_many :tasks, through: :jobs
   has_many :prospects, dependent: :destroy
+  has_many :contractors, dependent: :destroy
 end

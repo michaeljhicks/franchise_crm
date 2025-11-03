@@ -56,9 +56,13 @@ class JobsController < ApplicationController
 
   def new
     @job = @machine.jobs.build
+    # ADD THIS LINE: Prepare the scoped list of contractors for the form
+    @contractors = current_user.contractors.order(:name)
   end
 
   def edit
+    # ADD THIS LINE: Also prepare the list for the edit form
+    @contractors = current_user.contractors.order(:name)
   end
 
   def create
