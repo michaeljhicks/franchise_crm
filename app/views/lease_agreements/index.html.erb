@@ -1,16 +1,38 @@
-<p style="color: green"><%= notice %></p>
+<header style="display: flex; justify-content: space-between; align-items: center;">
+  <h1>Lease Agreements</h1>
+  <%= link_to "New Lease Agreement", new_lease_agreement_path, role: "button" %>
+</header>
 
-<% content_for :title, "Lease agreements" %>
-
-<h1>Lease agreements</h1>
-
-<div id="lease_agreements">
-  <% @lease_agreements.each do |lease_agreement| %>
-    <%= render lease_agreement %>
-    <p>
-      <%= link_to "Show this lease agreement", lease_agreement %>
-    </p>
-  <% end %>
+<div class="overflow-auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Customer</th>
+        <th>Machine</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Monthly Rate</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @lease_agreements.each do |lease| %>
+        <tr>
+          <td><%= link_to lease.customer.business_name, lease.customer %></td>
+          <td><%= link_to lease.machine.machine_model, customer_machine_path(lease.customer, lease.machine) %></td>
+          <td><%= lease.lease_start_date&.strftime("%b %d, %Y") %></td>
+          <td><%= lease.lease_end_date&.strftime("%b %d, %Y") || 'Active' %></td>
+          <td><%= number_to_currency(lease.lease_rate) %></td>
+          <td>
+            <div role="group">
+              <%= link_to "View", lease, class: "secondary outline" %>
+              <%= link_to "Edit", edit_lease_agreement_path(lease), class: "secondary outline" %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
 
-<%= link_to "New lease agreement", new_lease_agreement_path %>
+<nav><%== pagy_nav(@pagy) %></nav>

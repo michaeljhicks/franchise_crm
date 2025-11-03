@@ -11,8 +11,11 @@ class LeaseAgreementsController < ApplicationController
   end
 
   def new
-    @lease_agreement = current_user.lease_agreements.build
-    # Load customers and machines belonging to the current user
+    @lease_agreement = current_user.lease_agreements.build(
+      # Pre-fill from URL parameters if they exist
+      customer_id: params[:customer_id],
+      machine_id: params[:machine_id]
+    )
     @customers = current_user.customers.order(:business_name)
     @machines = current_user.machines.order(:machine_model)
   end

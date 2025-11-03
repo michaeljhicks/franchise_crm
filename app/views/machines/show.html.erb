@@ -95,6 +95,37 @@
         </div>
       </div>
     </article>
+
+    <article>
+      <header style="display: flex; justify-content: space-between; align-items: center;">
+        <strong>Lease History</strong>
+        <%= link_to "+ New Lease", new_lease_agreement_path(customer_id: @machine.customer.id, machine_id: @machine.id), role: "button", class: "outline" %>
+      </header>
+      <% if @machine.lease_agreements.any? %>
+        <table>
+          <thead>
+            <tr>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Rate</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @machine.lease_agreements.order(lease_start_date: :desc).each do |lease| %>
+              <tr>
+                <td><%= lease.lease_start_date&.strftime("%b %d, %Y") %></td>
+                <td><%= lease.lease_end_date&.strftime("%b %d, %Y") || 'Active' %></td>
+                <td><%= number_to_currency(lease.lease_rate) %></td>
+                <td><%= link_to "View", lease, class: "secondary outline" %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p>No lease history found for this machine.</p>
+      <% end %>
+    </article>
   </div>
 
   <div class="right-column">
