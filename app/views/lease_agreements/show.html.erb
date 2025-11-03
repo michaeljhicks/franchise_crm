@@ -29,6 +29,26 @@
       <%= number_to_currency(@lease_agreement.lease_rate) %>
     </div>
   </div>
+
+
+
+  <% if @lease_agreement.lease_end_date.present? %>
+    <hr>
+    <strong>Lease Timeline</strong>
+    
+
+    <progress value="<%= @lease_agreement.completion_percentage %>" max="100"></progress>
+    
+    <div class="grid">
+      <div>
+        <small><%= @lease_agreement.days_elapsed %> days into lease</small>
+      </div>
+      <div style="text-align: right;">
+        <small><%= @lease_agreement.days_remaining %> days remaining</small>
+      </div>
+    </div>
+  <% end %>
+
 </article>
 
 <br>
@@ -44,3 +64,28 @@
     %>
   </div>
 </div>
+
+<style>
+  progress {
+    display: block;
+    width: 100%;
+    height: 1.25rem;
+    border-radius: 9999px;
+    border: none;
+    background-color: #e5e7eb; /* A light gray background */
+  }
+  /* Styling for Chrome/Safari */
+  progress::-webkit-progress-bar {
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+  }
+  progress::-webkit-progress-value {
+    background-color: #3B82F6; /* The blue color we use elsewhere */
+    border-radius: 9999px;
+  }
+  /* Styling for Firefox */
+  progress::-moz-progress-bar {
+    background-color: #3B82F6; /* The blue color we use elsewhere */
+    border-radius: 9999px;
+  }
+</style>
