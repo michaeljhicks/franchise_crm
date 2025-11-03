@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_03_190725) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_03_202630) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -73,6 +73,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_190725) do
     t.index ["user_id"], name: "index_jobs_on_user_id"
   end
 
+  create_table "lease_agreements", force: :cascade do |t|
+    t.date "lease_start_date"
+    t.date "lease_end_date"
+    t.decimal "lease_rate", precision: 8, scale: 2
+    t.bigint "user_id", null: false
+    t.bigint "customer_id", null: false
+    t.bigint "machine_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_lease_agreements_on_customer_id"
+    t.index ["machine_id"], name: "index_lease_agreements_on_machine_id"
+    t.index ["user_id"], name: "index_lease_agreements_on_user_id"
+  end
+
   create_table "machines", force: :cascade do |t|
     t.string "machine_make"
     t.string "machine_model"
@@ -88,7 +102,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_190725) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "warranty_registered", default: false
-    t.decimal "lease_rate", precision: 8, scale: 2, default: "0.0"
     t.index ["customer_id"], name: "index_machines_on_customer_id"
   end
 
@@ -150,6 +163,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_190725) do
   add_foreign_key "jobs", "customers"
   add_foreign_key "jobs", "machines"
   add_foreign_key "jobs", "users"
+  add_foreign_key "lease_agreements", "customers"
+  add_foreign_key "lease_agreements", "machines"
+  add_foreign_key "lease_agreements", "users"
   add_foreign_key "machines", "customers"
   add_foreign_key "prospects", "users"
   add_foreign_key "tasks", "jobs"

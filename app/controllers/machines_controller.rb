@@ -114,7 +114,7 @@ class MachinesController < ApplicationController
       :purchase_date, :install_date, :status,
       # ADD THESE VIRTUAL ATTRIBUTES
       :other_machine_make, :other_machine_type, :other_status,
-      :warranty_registered, :lease_rate
+      :warranty_registered
     )
   end
 end

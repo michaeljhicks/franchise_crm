@@ -1,0 +1,11 @@
+<% content_for :title, "New lease agreement" %>
+
+<h1>New lease agreement</h1>
+
+<%= render "form", lease_agreement: @lease_agreement %>
+
+<br>
+
+<div>
+  <%= link_to "Back to lease agreements", lease_agreements_path %>
+</div>

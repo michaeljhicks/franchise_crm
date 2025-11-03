@@ -2,6 +2,7 @@ class Customer < ApplicationRecord
   belongs_to :user
   has_many :machines, dependent: :destroy
   has_many :jobs, dependent: :destroy
+  has_many :lease_agreements, dependent: :destroy
 
   validates :business_name, presence: true
 

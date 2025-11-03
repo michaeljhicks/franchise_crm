@@ -1,6 +1,6 @@
 <nav style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem;">
   
-  <%# --- Left Side: Logo and Main App Links --- %>
+
   <div style="display: flex; align-items: center; gap: 1rem;">
     <%= link_to root_path do %>
       <%= image_tag "logo.svg", style: "height: 40px; width: auto; display: block;" %>
@@ -11,8 +11,9 @@
         <%= link_to "Dashboard", root_path %>
         <%= link_to "Customers", customers_path %>
         <%= link_to "Machines", machines_path %>
-        <%= link_to "Boneyard", boneyard_machines_path %>
+        <%= link_to "Lease Agreements", lease_agreements_path %>
         <%= link_to "Jobs", jobs_path %>
+        <%= link_to "Boneyard", boneyard_machines_path %>
         <%= link_to "Contractors", contractors_path %>
         <%= link_to "Prospects", prospects_path %>
         <%= link_to "Lead Capture", new_prospect_path %>
@@ -20,7 +21,6 @@
     <% end %>
   </div>
 
-  <%# --- Right Side: User Menu --- %>
   <% if user_signed_in? %>
     <div style="display: flex; align-items: center; gap: 1rem;">
       <% if current_user.admin? %>

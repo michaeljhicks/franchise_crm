@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :lease_agreements
   resources :prospects
   devise_for :users
   root "dashboard#index"

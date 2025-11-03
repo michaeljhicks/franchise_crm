@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @lease_agreement %>
+
+<div>
+  <%= link_to "Edit this lease agreement", edit_lease_agreement_path(@lease_agreement) %> |
+  <%= link_to "Back to lease agreements", lease_agreements_path %>
+
+  <%= button_to "Destroy this lease agreement", @lease_agreement, method: :delete %>
+</div>

@@ -36,10 +36,6 @@
     <%= form.label :machine_type %>
     <%= form.select :machine_type, Machine::MACHINE_TYPES, { prompt: 'Select a type' }, { data: { action: "change->dynamic-form#toggleOther" } } %>
   </div>
-  <div>
-    <%= form.label :lease_rate %>
-    <%= form.number_field :lease_rate, step: 0.01 %>
-  </div>
 
   <div>
     <%= form.check_box :warranty_registered %>

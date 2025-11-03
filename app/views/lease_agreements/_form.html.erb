@@ -1,0 +1,48 @@
+<%= form_with(model: lease_agreement) do |form| %>
+  <% if lease_agreement.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(lease_agreement.errors.count, "error") %> prohibited this lease_agreement from being saved:</h2>
+
+      <ul>
+        <% lease_agreement.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :lease_start_date, style: "display: block" %>
+    <%= form.date_field :lease_start_date %>
+  </div>
+
+  <div>
+    <%= form.label :lease_end_date, style: "display: block" %>
+    <%= form.date_field :lease_end_date %>
+  </div>
+
+  <div>
+    <%= form.label :lease_rate, style: "display: block" %>
+    <%= form.text_field :lease_rate %>
+  </div>
+
+  <div>
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div>
+    <%= form.label :customer_id %>
+    <%= form.collection_select :customer_id, @customers, :id, :business_name, prompt: "Select a customer" %>
+  </div>
+
+  <div>
+    <%= form.label :machine_id %>
+    <%# This shows "Make - Model (Serial)" for easy identification %>
+    <%= form.collection_select :machine_id, @machines, :id, ->(m) { "#{m.machine_make} - #{m.machine_model} (#{m.machine_serial_number})" }, prompt: "Select a machine" %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

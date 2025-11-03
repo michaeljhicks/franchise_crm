@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Lease agreements" %>
+
+<h1>Lease agreements</h1>
+
+<div id="lease_agreements">
+  <% @lease_agreements.each do |lease_agreement| %>
+    <%= render lease_agreement %>
+    <p>
+      <%= link_to "Show this lease agreement", lease_agreement %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New lease agreement", new_lease_agreement_path %>

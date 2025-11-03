@@ -10,4 +10,5 @@ class User < ApplicationRecord
   has_many :tasks, through: :jobs
   has_many :prospects, dependent: :destroy
   has_many :contractors, dependent: :destroy
+  has_many :lease_agreements, dependent: :destroy
 end

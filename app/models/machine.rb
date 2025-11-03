@@ -3,8 +3,7 @@ class Machine < ApplicationRecord
   belongs_to :customer
   has_one :user, through: :customer
   has_many :jobs, dependent: :destroy
-
-  # --- ADD THIS SECTION ---
+  has_many :lease_agreements, dependent: :destroy
 
   # Define the options for our dropdowns
   MACHINE_MAKES = ["Ice-O-Matic", "Hoshizaki", "Manitowoc", "Koolaire", "Other"]
@@ -17,6 +16,13 @@ class Machine < ApplicationRecord
 
   # Before saving, if "Other" was selected, use the value from the "other" text box
   before_save :substitute_other_values
+
+  def current_lease_rate
+    # Find the most recent lease agreement that has not yet ended.
+    active_lease = lease_agreements.where("lease_end_date IS NULL OR lease_end_date >= ?", Time.zone.today).order(lease_start_date: :desc).first
+    active_lease&.lease_rate
+  end
+
   def age
     return "Not installed" unless install_date.present?
     
