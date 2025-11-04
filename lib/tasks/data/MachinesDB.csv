@@ -1,0 +1,9 @@
+machine_make,machine_model,machine_serial_number,machine_type,bin_make,bin_model,bin_serial_number,purchase_date,install_date,status,customer_id,warranty_registered
+Hoshizaki,IM-200BAC,,,,,,,,Active,46,TRUE
+Koolaire,KYT-400A,12287882023,Modular,,,,,,Active,45,TRUE
+Hoshizaki,IM-500SAB,N14876H,Modular,Hoshizaki,B700SF,P55337D,,,Active,44,TRUE
+Koolaire,KDT0500,1121076433,Modular,Koolaire,K570,1121079687,,,Active,43,TRUE
+Koolaire,KDT0420,1121094021,Modular,Koolaire,K420,1121032325,,,Active,42,TRUE
+Koolaire,RNP-0320,12278922023,Modular,Koolaire,D420,1121110050,,,Active,41,TRUE
+Koolaire,KYT-300A,1121105307,,,,,,,Active,40,TRUE
+Hoshizaki,IM-500SAB,P01732A,Modular,Hoshizaki,B700SF,P55337D,,,Active,39,TRUE

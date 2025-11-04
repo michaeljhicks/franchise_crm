@@ -1,31 +1,31 @@
 require 'csv'
 
 namespace :import do
+  # This is the master task. It runs the other tasks in the correct order.
+  desc "Import all data from CSV files"
+  task all: :environment do
+    Rake::Task['import:customers'].invoke
+    Rake::Task['import:machines'].invoke
+    puts "All data imported successfully!"
+  end
+
+  # Your existing, robust task for importing customers.
   desc "Import customers from lib/tasks/data/customers.csv"
   task customers: :environment do
     csv_file_path = Rails.root.join('lib', 'tasks', 'data', 'customers.csv')
 
-    # Ensure the User with ID 1 exists before we start
     unless User.exists?(1)
       puts "ERROR: User with ID 1 not found. Please create this user before importing customers."
-      return # Stop the task
+      return
     end
 
     puts "Starting to import customers from #{csv_file_path}..."
 
-    # Use a transaction to ensure all customers are imported or none are.
-    # If any single customer fails to save, the entire import will be rolled back.
     ActiveRecord::Base.transaction do
       CSV.foreach(csv_file_path, headers: true) do |row|
         begin
-          # find_or_create_by! will search for a customer with this business_name.
-          # If it doesn't find one, it will execute the block to create it.
-          # The `!` at the end means it will raise an error if validation fails.
           Customer.find_or_create_by!(business_name: row['business_name']) do |customer|
             puts "Creating new customer: #{row['business_name']}"
-            
-            # Map the columns from the CSV to the attributes of the new customer object.
-            # This block only runs if a NEW customer is being created.
             customer.street_address = row['street_address']
             customer.city = row['city']
             customer.state = row['state']
@@ -41,10 +41,8 @@ namespace :import do
             customer.user_id = row['user_id']
           end
         rescue ActiveRecord::RecordInvalid => e
-          # If the `!` raises an error, we catch it and print a helpful message.
           puts "SKIPPED (Validation Failed): Customer '#{row['business_name']}' - #{e.message}"
         rescue => e
-          # Catch any other unexpected errors.
           puts "SKIPPED (Error): Customer '#{row['business_name']}' - #{e.message}"
         end
       end
@@ -52,5 +50,40 @@ namespace :import do
 
     puts "Customer import finished."
     puts "Total customers in database now: #{Customer.count}"
+  end
+
+  # The new task for importing machines from your MachinesDB.csv file.
+  desc "Import machines from lib/tasks/data/MachinesDB.csv"
+  task machines: :environment do
+    csv_file_path = Rails.root.join('lib', 'tasks', 'data', 'MachinesDB.csv')
+
+    puts "Starting to import machines from #{csv_file_path}..."
+
+    ActiveRecord::Base.transaction do
+      CSV.foreach(csv_file_path, headers: true) do |row|
+        # Skip rows that don't have a serial number, as it's our unique identifier.
+        if row['machine_serial_number'].blank?
+          puts "SKIPPED (Missing Serial Number): Row for customer_id #{row['customer_id']}"
+          next
+        end
+
+        begin
+          # Use the serial number to find existing machines to prevent duplicates.
+          Machine.find_or_create_by!(machine_serial_number: row['machine_serial_number']) do |machine|
+            puts "Creating new machine: #{row['machine_make']} #{row['machine_model']} (S/N: #{row['machine_serial_number']})"
+
+            # assign_attributes is a convenient way to map all columns at once.
+            machine.assign_attributes(row.to_hash)
+          end
+        rescue ActiveRecord::RecordInvalid => e
+          puts "SKIPPED (Validation Failed): Machine S/N '#{row['machine_serial_number']}' - #{e.message}"
+        rescue => e
+          puts "SKIPPED (Error): Machine S/N '#{row['machine_serial_number']}' - #{e.message}"
+        end
+      end
+    end
+
+    puts "Machine import finished."
+    puts "Total machines in database now: #{Machine.count}"
   end
 end
