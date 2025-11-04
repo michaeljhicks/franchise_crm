@@ -6,5 +6,10 @@ Completed Tasks:
 <% @completed_tasks.each do |task| %>
 - <%= task.description %>
 <% end %>
+<% if @job.contractor_notes.present? %>
+
+Notes:
+<%= @job.contractor_notes %>
+<% end %>
 
 Thank you for your business!

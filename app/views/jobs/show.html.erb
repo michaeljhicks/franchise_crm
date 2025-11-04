@@ -1,54 +1,59 @@
 <p style="color: green"><%= notice %></p>
 
-<header>
-  <h1>Job for: <%= link_to @job.customer.business_name, @job.customer %></h1>
-  <p>
-    <strong>Type:</strong> <%= @job.job_type.humanize.titleize %> |
-     <strong>Status:</strong> <%== status_badge(@job) %> |
-    <strong>Scheduled for:</strong> <%= @job.scheduled_date_time ? @job.scheduled_date_time.strftime("%a, %b %d, %Y") : 'Not Scheduled' %>
-  </p>
-  <% unless @job.completed? || @job.cancelled? %>
-    <%= button_to "Mark as Completed", complete_job_path(@job), method: :patch, data: { turbo_confirm: "This will mark the job as completed with today's date and time. Are you sure?" } %>
-  <% end %>
+<header style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+  <div>
+    <h1>Job for: <%= link_to @job.customer.business_name, @job.customer %></h1>
+    <p>
+      <strong>Type:</strong> <%= @job.job_type.humanize.titleize %> |
+      <strong>Status:</strong> <%== status_badge(@job) %> |
+      <strong>Scheduled for:</strong> <%= @job.scheduled_date_time ? @job.scheduled_date_time.strftime("%a, %b %d, %Y") : 'Not Scheduled' %>
+    </p>
+  </div>
+  <div>
+    <% unless @job.completed? || @job.cancelled? %>
+      <%= button_to "Mark as Completed", complete_job_path(@job), method: :patch, data: { turbo_confirm: "This will mark the job as completed with today's date and time. Are you sure?" } %>
+    <% end %>
+  </div>
 </header>
 
-
-
-<%= form_with(model: [@customer, @machine, @job]) do |form| %>
+<%= form_with(model: @job, url: customer_machine_job_path(@customer, @machine, @job)) do |form| %>
   <article>
-    <header><strong>Checklist</strong></header>
+    <header><strong>Job Details & Checklist</strong></header>
 
     <% if @job.tasks.any? %>
+      <h4>Checklist</h4>
       <%= form.fields_for :tasks do |task_form| %>
         <div style="display: flex; align-items: center; gap: 1rem; text-decoration: <%= task_form.object.completed_at? ? 'line-through' : 'none' %>; color: <%= task_form.object.completed_at? ? '#6B7280' : 'inherit' %>;">
           <%= task_form.check_box :completed %>
           <%= task_form.label :completed, task_form.object.description, style: "margin-bottom: 0;" %>
         </div>
-        
-        <%# Put the <hr> before the end tag %>
-        <hr> 
-      <% end %> <%# The 'end' for the loop goes here %>
+        <hr>
+      <% end %>
     <% else %>
       <p>No checklist items for this job type.</p>
     <% end %>
 
-    <hr style="margin-top: 2rem;">
-    <div>
-      <%= form.label :contractor_notes, "Notes" %>
-      <%= form.text_area :contractor_notes, rows: 4 %>
+    <div class="grid" style="margin-top: 2rem;">
+      <div>
+        <%= form.label :contractor_notes, "External Notes (Visible to Customer)" %>
+        <%= form.text_area :contractor_notes, rows: 5 %>
+      </div>
+      <div>
+        <%= form.label :internal_notes, "Internal Notes (Team Only)" %>
+        <%= form.text_area :internal_notes, rows: 5 %>
+      </div>
     </div>
     
   </article>
 
   <div style="margin-top: 1rem;">
-    <%= form.submit "Update Job Checklist" %>
+    <%= form.submit "Update Job Details" %>
   </div>
 <% end %>
 
 <br>
 
 <div>
-  <%= link_to "Edit this job", edit_customer_machine_job_path(@customer, @machine, @job), class: "secondary" %> |
   <%= link_to "Back to all jobs", jobs_path %>
 
   <div style="margin-top: 2rem;">
@@ -56,7 +61,7 @@
                   [@customer, @machine, @job], 
                   method: :delete, 
                   form: { data: { turbo_confirm: "Are you sure you want to permanently delete this job?" } },
-                  class: "secondary" 
+                  class: "contrast"
     %>
   </div>
 </div>

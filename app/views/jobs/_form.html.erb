@@ -32,13 +32,13 @@
   </div>
 
   <div>
-    <%= form.label :contractor_notes, style: "display: block" %>
-    <%= form.textarea :contractor_notes %>
+    <%= form.label :contractor_notes, "External Notes (Visible to Customer)" %>
+    <%= form.text_area :contractor_notes, rows: 4 %>
   </div>
 
   <div>
-    <%= form.label :internal_notes, style: "display: block" %>
-    <%= form.textarea :internal_notes %>
+    <%= form.label :internal_notes, "Internal Notes (For Team Only)" %>
+    <%= form.text_area :internal_notes, rows: 4 %>
   </div>
   
   <div>

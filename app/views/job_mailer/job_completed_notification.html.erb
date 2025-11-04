@@ -6,7 +6,7 @@
   <body>
     <h1>Work Completed at <%= @customer.business_name %></h1>
     <p>
-      Hello <%= @customer.main_contact_name %>,
+      Greetings <%= @customer.main_contact_name %>,
     </p>
     <p>
       This email is to notify you that the job '<%= @job.job_type.humanize.titleize %>' scheduled on <%= @job.scheduled_date_time.strftime("%B %d, %Y") %> has been completed.
@@ -18,6 +18,10 @@
         <li><%= task.description %></li>
       <% end %>
     </ul>
+    <% if @job.contractor_notes.present? %>
+      <h2>Notes:</h2>
+      <%= simple_format(@job.contractor_notes) %>
+    <% end %>
 
     <p>Thank you for your business!</p>
   </body>
