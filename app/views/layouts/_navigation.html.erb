@@ -1,52 +1,57 @@
-<nav style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem;">
+<nav class="main-nav">
   
-
-  <div style="display: flex; align-items: center; gap: 1rem;">
-    <%= link_to root_path do %>
-      <%= image_tag "logo.svg", style: "height: 40px; width: auto; display: block;" %>
+  <div class="nav-left">
+    <%= link_to root_path, class: "nav-logo" do %>
+      <%= image_tag "logo.svg" %>
+      <strong class="desktop-only">iceBox</strong>
     <% end %>
 
-    <% if user_signed_in? %>
-      <span>
+    <div class="desktop-links">
+      <% if user_signed_in? %>
         <%= link_to "Dashboard", root_path %>
-        <%= link_to "Customers", customers_path %>
+        <%= link_to "Customers", customers_path, class: "highlight-link" %>        
+        <%= link_to "Contractors", contractors_path, class: "highlight-link" %>
+        <%= link_to "Jobs", jobs_path %> 
         <%= link_to "Machines", machines_path %>
-        <%= link_to "Lease Agreements", lease_agreements_path %>
-        <%= link_to "Jobs", jobs_path %>
+        <%= link_to "Leases", lease_agreements_path %>     
         <%= link_to "Boneyard", boneyard_machines_path %>
-        <%= link_to "Contractors", contractors_path %>
-        <%= link_to "Prospects", prospects_path %>
-        <%= link_to "Lead Capture", new_prospect_path %>
-      </span>
-    <% end %>
+        <%= link_to "Prospects", prospects_path, class: "highlight-link" %>           
+        <%= link_to "Lead Capture", new_prospect_path, class: "highlight-link" %>
+      <% end %>
+    </div>
   </div>
 
-  <% if user_signed_in? %>
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <% if current_user.admin? %>
-        <%= link_to "Admin", admin_root_path %>
-      <% end %>
-      <span><%= link_to current_user.email, edit_user_registration_path %></span>
-      <%= button_to "Log Out", destroy_user_session_path, method: 'delete', class: 'logout-button', form_class: 'logout-form' %>
-    </div>
-  <% end %>
+  <div class="nav-right">
+    <% if user_signed_in? %>
+      <div class="desktop-links">
+        <% if current_user.admin? %>
+            <%= link_to "Admin", admin_root_path %>
+        <% end %>
+        <%= link_to current_user.email, edit_user_registration_path %>
+        <%= button_to "Log Out", destroy_user_session_path, method: :delete, form_class: "logout-form-inline" %>
+      </div>
+
+      <div class="mobile-dropdown">
+        <button class="hamburger-button">☰</button>
+        <div class="mobile-dropdown-content">
+          <%# --- ADDED LEASE AGREEMENTS AND STANDARDIZED TEXT --- %>
+          <%= link_to "Dashboard", root_path %>
+          <%= link_to "Customers", customers_path %>
+          <%= link_to "Machines", machines_path %>
+          <%= link_to "Boneyard", boneyard_machines_path %>
+          <%= link_to "Jobs", jobs_path %>
+          <%= link_to "Contractors", contractors_path %>
+          <%= link_to "Prospects", prospects_path %>
+          <%= link_to "Lease Agreements", lease_agreements_path %>
+          <%= link_to "Lead Capture", new_prospect_path %>
+          <hr>
+          <% if current_user.admin? %>
+            <%= link_to "Admin", admin_root_path %>
+          <% end %>
+          <%= link_to "Edit Profile", edit_user_registration_path %>
+          <%= button_to "Log Out", destroy_user_session_path, method: :delete %>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </nav>
-
-
-<style>
-  nav a {
-    margin-right: 15px;
-    text-decoration: none;
-  }
-  .logout-form {
-    margin: 0;
-  }
-  .logout-button {
-    background-color: #f3f4f6; color: #374151; border: 1px solid #d1d5db;
-    padding: 0.25rem 0.75rem; font-size: 0.875rem; border-radius: 0.375rem;
-    cursor: pointer; line-height: inherit; white-space: nowrap;
-  }
-  .logout-button:hover {
-    background-color: #e5e7eb;
-  }
-</style>

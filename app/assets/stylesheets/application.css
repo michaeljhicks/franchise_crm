@@ -1,10 +1,107 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+/* === RESPONSIVE NAVIGATION BAR (Hover Dropdown Version) === */
+
+/* --- Main container for the navbar --- */
+.main-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e1e4e8;
+  position: relative; /* Needed to anchor the dropdown menu */
+}
+
+/* --- Helper containers for left/right alignment --- */
+.nav-left, .nav-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap; 
+  min-width: 0;
+  gap: 1rem;
+}
+
+/* --- Logo styling --- */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  font-weight: bold;
+}
+.nav-logo img {
+  height: 40px;
+}
+.logout-form-inline {
+  margin: 0; /* Helper for the logout button form */
+}
+
+.highlight-link {
+  font-weight: 700;
+  color: #226087; /* optional darker color */
+  text-decoration: none;
+}
+
+.highlight-link:hover {
+  text-decoration: underline;
+}
+
+
+
+/* --- MOBILE-FIRST STYLES --- */
+/* By default, hide the desktop links and the desktop version of the logo title */
+.desktop-links, .desktop-only {
+  white-space: nowrap;
+  display: none;
+}
+
+
+/* --- CSS Hover Dropdown Logic --- */
+.mobile-dropdown {
+  position: relative; /* The container for the dropdown */
+  display: block;    /* Show the mobile dropdown container by default */
+}
+.hamburger-button {
+  background: none;
+  border: none;
+  font-size: 2.5rem; /* Make the icon a bit bigger */
+  cursor: pointer;
+  padding: 0;
+  color: #374151; /* A standard text color */
+}
+.mobile-dropdown-content {
+  display: none; /* The menu is HIDDEN by default */
+  position: absolute;
+  right: 0; /* Align to the right edge of its container */
+  background-color: white;
+  min-width: 220px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 100;
+  padding: 1rem;
+  /* Replaced flex with block for links to stack */
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+}
+.mobile-dropdown-content a,
+.mobile-dropdown-content form {
+  display: block; /* Make each link take up its own line */
+  padding: 0.5rem;
+  white-space: nowrap; /* Prevent links from wrapping */
+  text-align: left;
+}
+.mobile-dropdown-content hr {
+  margin: 0.5rem 0;
+}
+
+
+/* --- THE MAGIC RULE --- */
+/* When the user hovers over the dropdown container, show the content */
+.mobile-dropdown:hover .mobile-dropdown-content {
+  display: block;
+}
+
+@media (min-width: 1500px) {
+  .desktop-links, .desktop-only { display: flex; align-items: center; gap: 1rem; }
+  .mobile-dropdown { display: none; }
+}
