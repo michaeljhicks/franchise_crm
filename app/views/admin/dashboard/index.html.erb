@@ -1,35 +1,68 @@
 <h1>Admin Dashboard</h1>
 <p>A high-level overview of system-wide data.</p>
 
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
   
   <article>
     <header>
-      <h2><%= @user_count %></h2>
+      <strong>Total Franchisees (<%= @user_count %>)</strong>
     </header>
-    Total Franchisees
+    <% if @users.any? %>
+      <ul>
+        <% @users.each do |user| %>
+          <li><%= user.owner_name.presence || user.email %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>No franchisees found.</p>
+    <% end %>
   </article>
 
   <article>
     <header>
-      <h2><%= @customer_count %></h2>
+      <strong>Total Customers (<%= @customer_count %>)</strong>
     </header>
-    Total Customers
+    <% if @customers_by_franchisee.any? %>
+      <ul>
+
+        <% @customers_by_franchisee.sort_by { |name, count| -count }.each do |franchisee_name, count| %>
+          <li><%= franchisee_name %> (<%= count %>)</li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>No customers found.</p>
+    <% end %>
   </article>
+
 
   <article>
     <header>
-      <h2><%= @machine_count %></h2>
+      <strong>Total Machines (<%= @machine_count %>)</strong>
     </header>
-    Total Machines
+    <% if @machines_by_franchisee.any? %>
+      <ul>
+        <% @machines_by_franchisee.sort_by { |name, count| -count }.each do |franchisee_name, count| %>
+          <li><%= franchisee_name %> (<%= count %>)</li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>No machines found.</p>
+    <% end %>
   </article>
+
 
   <article>
     <header>
-      <h2><%= @job_count %></h2>
+      <strong>Jobs This Month (<%= @jobs_this_month_by_franchisee.values.sum %>)</strong>
     </header>
-    Total Jobs
+    <% if @jobs_this_month_by_franchisee.any? %>
+      <ul>
+        <% @jobs_this_month_by_franchisee.sort_by { |name, count| -count }.each do |franchisee_name, count| %>
+          <li><%= franchisee_name %> (<%= count %>)</li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>No jobs scheduled for the current month.</p>
+    <% end %>
   </article>
-
 </div>
