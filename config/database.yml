@@ -56,7 +56,6 @@ development:
 test:
   <<: *default
   database: franchise_crm_test
-
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
 # ever seen by anyone, they now have access to your database.
@@ -78,23 +77,28 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  primary:
-    <<: *default
-    # This single line tells Rails to get all connection info
-    # from the environment variable Heroku provides.
-    url: <%= ENV["DATABASE_URL"] %>
-  # --- END OF CHANGE ---
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  url: <%= ENV["DATABASE_URL"] %>
+# production:
+#   primary:
+#     <<: *default
+#     # This single line tells Rails to get all connection info
+#     # from the environment variable Heroku provides.
+#     url: <%= ENV["DATABASE_URL"] %>
+#   # --- END OF CHANGE ---
 
-  # The blocks below are for advanced multi-database setups.
-  # For a standard Heroku deployment, they are not strictly necessary
-  # and will be ignored because they inherit from a block we are no longer using.
-  # It is safe to leave them or remove them. For simplicity, let's leave them.
-  cache:
-    <<: *default # Changed this from *primary_production
-    # ...
-  queue:
-    <<: *default # Changed this from *primary_production
-    # ...
-  cable:
-    <<: *default # Changed this from *primary_production
-    # ...
+#   # The blocks below are for advanced multi-database setups.
+#   # For a standard Heroku deployment, they are not strictly necessary
+#   # and will be ignored because they inherit from a block we are no longer using.
+#   # It is safe to leave them or remove them. For simplicity, let's leave them.
+#   cache:
+#     <<: *default # Changed this from *primary_production
+#     # ...
+#   queue:
+#     <<: *default # Changed this from *primary_production
+#     # ...
+#   cable:
+#     <<: *default # Changed this from *primary_production
+#     # ...
