@@ -19,6 +19,9 @@ gem "jbuilder"
 gem "pagy"
 gem "csv"
 
+gem 'omniauth-google-oauth2'
+gem 'google-api-client', '>= 0.53'
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 

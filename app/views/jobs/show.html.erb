@@ -9,9 +9,16 @@
       <strong>Scheduled for:</strong> <%= @job.scheduled_date_time ? @job.scheduled_date_time.strftime("%a, %b %d, %Y") : 'Not Scheduled' %>
     </p>
   </div>
-  <div>
+  
+  <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
+    <%= link_to "Edit Job", edit_customer_machine_job_path(@customer, @machine, @job), class: "secondary header-button" %>
+    
     <% unless @job.completed? || @job.cancelled? %>
-      <%= button_to "Mark as Completed", complete_job_path(@job), method: :patch, data: { turbo_confirm: "This will mark the job as completed with today's date and time. Are you sure?" } %>
+      <%= button_to "Mark as Completed", complete_job_path(@job), 
+            method: :patch, 
+            class: "header-button",
+            data: { turbo_confirm: "Are you sure?" } 
+      %>
     <% end %>
   </div>
 </header>
@@ -65,3 +72,14 @@
     %>
   </div>
 </div>
+
+<style>
+  .header-button {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    box-sizing: border-box; 
+    white-space: nowrap; 
+    display: inline-flex;
+    align-items: center;
+  }
+</style>

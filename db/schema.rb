@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_03_202630) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_05_203115) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -67,6 +67,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_202630) do
     t.bigint "contractor_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "google_event_id"
     t.index ["contractor_id"], name: "index_jobs_on_contractor_id"
     t.index ["customer_id"], name: "index_jobs_on_customer_id"
     t.index ["machine_id"], name: "index_jobs_on_machine_id"
@@ -151,6 +152,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_202630) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "time_zone"
+    t.string "provider"
+    t.string "uid"
+    t.string "google_access_token"
+    t.string "google_refresh_token"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

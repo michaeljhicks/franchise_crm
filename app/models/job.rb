@@ -76,8 +76,45 @@ class Job < ApplicationRecord
 
   after_update :send_completion_notification, if: :completed_status_changed?
 
+  after_commit :sync_create_to_google, on: :create
+  after_commit :sync_update_to_google, on: :update
+  after_commit :sync_destroy_to_google, on: :destroy
+
 
   private
+
+  def sync_create_to_google
+    puts "Callback: sync_create_to_google triggered for Job ##{id}"
+    return unless user.google_access_token.present?
+    
+    service = GoogleCalendarService.new(user)
+    google_event = service.create_event(self)
+    
+    # Use update_column to skip callbacks and avoid an infinite loop
+    update_column(:google_event_id, google_event.id)
+    puts "Successfully created Google event #{google_event.id} for Job ##{id}"
+  end
+
+  def sync_update_to_google
+    puts "Callback: sync_update_to_google triggered for Job ##{id}"
+    return unless user.google_access_token.present? && google_event_id.present?
+    
+    # We only want to sync if the scheduled time actually changed
+    return unless saved_change_to_scheduled_date_time?
+
+    service = GoogleCalendarService.new(user)
+    service.update_event(self)
+    puts "Successfully updated Google event #{google_event_id} for Job ##{id}"
+  end
+
+  def sync_destroy_to_google
+    puts "Callback: sync_destroy_to_google triggered for Job ##{id}"
+    return unless user.google_access_token.present? && google_event_id.present?
+    
+    service = GoogleCalendarService.new(user)
+    service.delete_event(google_event_id)
+    puts "Successfully triggered deletion for Google event #{google_event_id}"
+  end
 
   def create_checklist_tasks
     # Use our new TASK_TEMPLATES hash for a cleaner lookup

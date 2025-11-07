@@ -19,6 +19,14 @@ Devise.setup do |config|
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
   # config.parent_controller = 'DeviseController'
+  config.omniauth :google_oauth2,
+  Rails.application.credentials.dig(:google_oauth2, :client_id),
+  Rails.application.credentials.dig(:google_oauth2, :client_secret),
+  {
+    scope: 'email, profile, https://www.googleapis.com/auth/calendar.events',
+    prompt: 'select_account consent',
+    access_type: 'offline' # IMPORTANT: This is what gets you a refresh_token
+  }
 
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
