@@ -1,6 +1,7 @@
 # config/routes.rb
 
 Rails.application.routes.draw do
+  get "communications/show"
   get "google_connections/destroy"
   # 1. Set the root path for logged-in users.
   root "dashboard#index"
@@ -49,6 +50,7 @@ Rails.application.routes.draw do
   end
 
   resource :google_connection, only: [:destroy]
+  resources :communications, only: [:show]
 
 
   # 5. Rails default health check route.

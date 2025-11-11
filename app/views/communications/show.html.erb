@@ -1,0 +1,14 @@
+<%= turbo_frame_tag "communication_#{@message.id}" do %>
+  <%
+    subject = @message.payload.headers.find { |h| h.name == 'Subject' }&.value
+    date_str = @message.payload.headers.find { |h| h.name == 'Date' }&.value
+    gmail_link = "https://mail.google.com/mail/u/0/#inbox/#{@message.id}"
+  %>
+  
+  <%= link_to subject, gmail_link, target: "_blank", style: "font-weight: bold;" %><br>
+  <small><%= Time.parse(date_str).strftime("%b %d, %Y at %l:%M %P") %></small>
+
+  <blockquote style="margin-top: 0.5rem; font-size: 0.9em; border-left: 2px solid #ccc; padding-left: 1rem;">
+    <%= simple_format(@body_snippet) %>
+  </blockquote>
+<% end %>

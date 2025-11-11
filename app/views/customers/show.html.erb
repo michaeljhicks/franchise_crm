@@ -77,12 +77,12 @@
               <%
                 subject = message.payload.headers.find { |h| h.name == 'Subject' }&.value
                 date_str = message.payload.headers.find { |h| h.name == 'Date' }&.value
-                # Construct a link to open the email directly in Gmail
-                gmail_link = "https://mail.google.com/mail/u/0/#inbox/#{message.id}"
               %>
               <li>
-                <%= link_to subject, gmail_link, target: "_blank" %><br>
-                <small><%= Time.parse(date_str).strftime("%b %d, %Y") %></small>
+                <%= turbo_frame_tag "communication_#{message.id}" do %>
+                  <%= link_to subject, communication_path(message.id), style: "font-weight: bold;" %><br>
+                  <small><%= Time.parse(date_str).strftime("%b %d, %Y at %l:%M %P") %></small>
+                <% end %>
               </li>
             <% end %>
           </ul>
