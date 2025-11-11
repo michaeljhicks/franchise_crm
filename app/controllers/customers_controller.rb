@@ -23,8 +23,14 @@ class CustomersController < ApplicationController
     @pagy, @customers = pagy(customers.order(:business_name), items: 20)
   end
 
-  # GET /customers/1 or /customers/1.json
   def show
+    # After the @customer is found, check for a Google connection
+    @communications = [] # Default to an empty array
+    if current_user.google_access_token.present?
+      service = GmailService.new(current_user)
+      # Call the service to get emails for the customer's main contact email
+      @communications = service.list_communications(@customer.main_contact_email)
+    end
   end
 
   # GET /customers/new

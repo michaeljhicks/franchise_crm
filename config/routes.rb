@@ -1,6 +1,7 @@
 # config/routes.rb
 
 Rails.application.routes.draw do
+  get "google_connections/destroy"
   # 1. Set the root path for logged-in users.
   root "dashboard#index"
 
@@ -46,6 +47,9 @@ Rails.application.routes.draw do
       post :convert
     end
   end
+
+  resource :google_connection, only: [:destroy]
+
 
   # 5. Rails default health check route.
   get "up" => "rails/health#show", as: :rails_health_check

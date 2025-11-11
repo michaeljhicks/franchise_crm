@@ -1,16 +1,17 @@
 <h2>Edit <%= resource_name.to_s.humanize %></h2>
 <article>
   <header><strong>Google Calendar Integration</strong></header>
-
-  <%# This is the full if/else logic %>
   <% if current_user.google_access_token.present? %>
     <p style="color: green;">
       ✓ Your account is connected to Google Calendar.
     </p>
+    <%= button_to "Disconnect from Google", google_connection_path, 
+                  method: :delete,
+                  form: { data: { turbo_confirm: "Are you sure? This will stop syncing with Google Calendar and Gmail." } },
+                  class: "secondary"
+    %>
   <% else %>
-    <p>Connect your account to automatically sync scheduled jobs with your primary Google Calendar.</p>
-    
-    <%# The link_to is now inside the 'else' block %>
+    <p>Connect your account to sync jobs with Google Calendar and view client communications from Gmail.</p>
     <%= link_to "Connect to Google Calendar", user_google_oauth2_omniauth_authorize_path, 
                 role: "button", 
                 data: { turbo: "false" } 

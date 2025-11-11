@@ -11,7 +11,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         provider: auth.provider,
         uid: auth.uid,
         google_access_token: auth.credentials.token,
-        google_refresh_token: auth.credentials.refresh_token
+        google_refresh_token: auth.credentials.refresh_token,
+        google_token_expires_at: Time.at(auth.credentials.expires_at)
       )
       redirect_to edit_user_registration_path, notice: "Successfully connected to Google Calendar."
     else

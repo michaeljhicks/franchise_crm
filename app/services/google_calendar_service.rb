@@ -9,7 +9,7 @@ class GoogleCalendarService
   def initialize(user)
     @user = user
     @service = Google::Apis::CalendarV3::CalendarService.new
-    @service.authorization = credentials_for(user)
+    @service.authorization = GoogleCredentials.new(user).credentials
   end
 
    def create_event(job)
@@ -75,23 +75,5 @@ class GoogleCalendarService
   end
   # We can add methods for update_event(job) and delete_event(job) here later.
 
-  private
-
-  # This helper method builds the authorization credentials from the user's saved tokens.
-  def credentials_for(user)
-    creds = Google::Auth::UserRefreshCredentials.new(
-      client_id: Rails.application.credentials.dig(:google_oauth2, :client_id),
-      client_secret: Rails.application.credentials.dig(:google_oauth2, :client_secret),
-      scope: 'https://www.googleapis.com/auth/calendar.events',
-      access_token: user.google_access_token,
-      refresh_token: user.google_refresh_token,
-      # This is important for handling token expiration
-      # expires_at: user.google_token_expires_at 
-    )
-    # The Google client library can automatically handle refreshing the access token
-    # if it has expired, as long as we have the refresh_token.
-    # We may need to add a `google_token_expires_at` column to the users table later.
-    
-    creds
-  end
+ 
 end
