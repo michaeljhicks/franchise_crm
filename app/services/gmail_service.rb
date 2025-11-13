@@ -9,25 +9,26 @@ class GmailService
     @service.authorization = GoogleCredentials.new(user).credentials
   end
 
-  # This method will find recent emails to/from a specific customer
-  def list_communications(customer_email, max_results: 5)
-    return [] if customer_email.blank?
+  def list_communications(emails, max_results: 5)
+    # If the emails array is blank or empty, do nothing.
+    return [] if emails.blank?
 
-    # Use Gmail's powerful search query syntax
-    query = "from:#{customer_email} OR to:#{customer_email}"
+    # Build a single, large query string by joining all parts with " OR ".
+    query = emails.map { |email| "(from:#{email} OR to:#{email})" }.join(' OR ')
 
-    # Search for messages matching the query
-    result = @service.list_user_messages('me', q: query, max_results: max_results)
-    
-    # If no messages are found, return an empty array
-    return [] unless result.messages.present?
+    begin
+      result = @service.list_user_messages('me', q: query, max_results: max_results)
+      
+      return [] unless result.messages.present?
 
-    # Fetch the metadata for each message (this is much faster than fetching the full content)
-    messages = result.messages.map do |message|
-      @service.get_user_message('me', message.id, format: 'metadata', metadata_headers: ['Subject', 'Date'])
+      messages = result.messages.map do |message|
+        @service.get_user_message('me', message.id, format: 'metadata', metadata_headers: ['Subject', 'Date'])
+      end
+      return messages
+    rescue Google::Apis::ClientError => e
+      puts "Error listing Gmail messages: #{e.message}"
+      return [] # Return an empty array on error
     end
-
-    messages
   end
 
   def get_message_metadata(message_id)

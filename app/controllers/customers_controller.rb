@@ -2,44 +2,61 @@ class CustomersController < ApplicationController
   before_action :authenticate_user! # ADD THIS LINE
   before_action :set_customer, only: %i[ show edit update destroy ]
 
-  # GET /customers or /customers.json
   def index
-    # Start with the base scope of the current user's customers
-    customers = current_user.customers
+    # Start with the base scope and eager-load contacts for display
+    customers = current_user.customers.includes(:contacts)
+
     @total_customers = customers.count
 
     if params[:query].present?
-      # If a search query is present, filter the results
-      # The `?` is a placeholder to safely insert the query
-      # `ILIKE` is a PostgreSQL feature for case-insensitive searching
       search_term = "%#{params[:query]}%"
-      customers = customers.where(
-        "business_name ILIKE ? OR main_contact_name ILIKE ? OR city ILIKE ?",
+      # We use `distinct` to prevent duplicate customer results if a customer has multiple contacts that match.
+      customers = customers.left_joins(:contacts).distinct.where(
+        "customers.business_name ILIKE ? OR contacts.name ILIKE ? OR customers.city ILIKE ?",
         search_term, search_term, search_term
       )
     end
 
-    # Finally, assign the (possibly filtered) results to the instance variable
+    # The pagy call remains the same
     @pagy, @customers = pagy(customers.order(:business_name), items: 20)
   end
 
+  # app/controllers/customers_controller.rb
+
   def show
-    # After the @customer is found, check for a Google connection
-    @communications = [] # Default to an empty array
+    # 1. Initialize @communications to a default empty array.
+    @communications = []
+    
+    # 2. Only proceed if the user is connected to Google.
     if current_user.google_access_token.present?
-      service = GmailService.new(current_user)
-      # Call the service to get emails for the customer's main contact email
-      @communications = service.list_communications(@customer.main_contact_email)
+      
+      # 3. Pluck all the valid email addresses from the customer's contacts.
+      contact_emails = @customer.contacts.pluck(:email).compact_blank
+
+      # 4. Only call the Gmail service if we actually have emails to search for.
+      if contact_emails.any?
+        
+        # 5. Initialize the service and get the communications for this customer.
+        service = GmailService.new(current_user)
+        @communications = service.list_communications(contact_emails)
+      end
     end
+
+    # The @customer is already found by the set_customer before_action.
+    # The view will now receive either the found emails or an empty array.
   end
 
-  # GET /customers/new
+  # app/controllers/customers_controller.rb
   def new
-    @customer = Customer.new
+    @customer = current_user.customers.build
+    # ADD THIS LINE to build the 3 blank contact fields
+    3.times { @customer.contacts.build }
   end
 
   # GET /customers/1/edit
   def edit
+    # This ensures there are always 3 contact fields on the edit form.
+    (3 - @customer.contacts.size).times { @customer.contacts.build }
   end
 
   # POST /customers or /customers.json
@@ -88,6 +105,17 @@ class CustomersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def customer_params
-      params.expect(customer: [ :business_name, :street_address, :city, :state, :zip, :main_contact_name, :main_contact_phone, :main_contact_email, :customer_since, :status, :notes, :user_id ])
+      params.require(:customer).permit(
+      # Top-level customer attributes
+      :business_name, :street_address, :city, :state, :zip,
+      :customer_since, :status, :notes,
+
+      # --- THIS IS THE CRITICAL PART ---
+      # This tells Rails to accept a hash of attributes for contacts.
+      # For each contact, we permit the ID (for existing records),
+      # all its attributes, and the special _destroy flag for deletion.
+      contacts_attributes: [:id, :name, :role, :phone, :email, :_destroy]
+      )
     end
+
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_10_224301) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_11_064433) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -23,6 +23,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_10_224301) do
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_assignments_on_customer_id"
     t.index ["machine_id"], name: "index_assignments_on_machine_id"
+  end
+
+  create_table "contacts", force: :cascade do |t|
+    t.string "name"
+    t.string "role"
+    t.string "phone"
+    t.string "email"
+    t.bigint "customer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_contacts_on_customer_id"
   end
 
   create_table "contractors", force: :cascade do |t|
@@ -40,11 +51,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_10_224301) do
     t.string "city"
     t.string "state"
     t.string "zip"
-    t.string "main_contact_name"
-    t.string "main_contact_phone"
-    t.string "main_contact_email"
-    t.string "other_contact_name"
-    t.string "other_contact_phone"
     t.date "customer_since"
     t.string "status", default: "Active"
     t.text "notes"
@@ -163,6 +169,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_10_224301) do
 
   add_foreign_key "assignments", "customers"
   add_foreign_key "assignments", "machines"
+  add_foreign_key "contacts", "customers"
   add_foreign_key "contractors", "users"
   add_foreign_key "customers", "users"
   add_foreign_key "jobs", "contractors"

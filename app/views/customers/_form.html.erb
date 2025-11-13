@@ -2,7 +2,6 @@
   <% if customer.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(customer.errors.count, "error") %> prohibited this customer from being saved:</h2>
-
       <ul>
         <% customer.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -21,49 +20,67 @@
     <%= form.text_field :street_address %>
   </div>
 
-  <div>
-    <%= form.label :city, style: "display: block" %>
-    <%= form.text_field :city %>
+  <div class="grid">
+    <div>
+      <%= form.label :city, style: "display: block" %>
+      <%= form.text_field :city %>
+    </div>
+    <div>
+      <%= form.label :state, style: "display: block" %>
+      <%= form.text_field :state %>
+    </div>
+    <div>
+      <%= form.label :zip, style: "display: block" %>
+      <%= form.text_field :zip %>
+    </div>
   </div>
 
-  <div>
-    <%= form.label :state, style: "display: block" %>
-    <%= form.text_field :state %>
-  </div>
+  <hr>
+  <h3>Contacts</h3>
+  <p><small>You can add up to 3 contacts for this customer.</small></p>
 
-  <div>
-    <%= form.label :zip, style: "display: block" %>
-    <%= form.text_field :zip %>
-  </div>
+  <%= form.fields_for :contacts do |contact_form| %>
+    <fieldset style="margin-bottom: 1rem;">
+      <div class="grid">
+        <div>
+          <%= contact_form.label :name %>
+          <%= contact_form.text_field :name %>
+        </div>
+        <div>
+          <%= contact_form.label :role %>
+          <%= contact_form.text_field :role %>
+        </div>
+      </div>
+      <div class="grid">
+        <div>
+          <%= contact_form.label :phone %>
+          <%= contact_form.text_field :phone %>
+        </div>
+        <div>
+          <%= contact_form.label :email %>
+          <%= contact_form.email_field :email %>
+        </div>
+      </div>
+    </fieldset>
+  <% end %>
+  <hr>
+  <%# --- END of Nested Contacts Section --- %>
 
-  <div>
-    <%= form.label :main_contact_name, style: "display: block" %>
-    <%= form.text_field :main_contact_name %>
-  </div>
-
-  <div>
-    <%= form.label :main_contact_phone, style: "display: block" %>
-    <%= form.text_field :main_contact_phone %>
-  </div>
-
-  <div>
-    <%= form.label :main_contact_email, style: "display: block" %>
-    <%= form.text_field :main_contact_email %>
-  </div>
-
-  <div>
-    <%= form.label :customer_since, style: "display: block" %>
-    <%= form.date_field :customer_since %>
-  </div>
-
-  <div>
-    <%= form.label :status, style: "display: block" %>
-    <%= form.select :status, Customer.statuses.keys.map { |s| [s.humanize.titleize, s] } %>
+  <%# --- Other Customer Fields --- %>
+  <div class="grid">
+    <div>
+      <%= form.label :customer_since, style: "display: block" %>
+      <%= form.date_field :customer_since %>
+    </div>
+    <div>
+      <%= form.label :status, style: "display: block" %>
+      <%= form.select :status, Customer.statuses.keys.map { |s| [s.humanize.titleize, s] } %>
+    </div>
   </div>
 
   <div>
     <%= form.label :notes, style: "display: block" %>
-    <%= form.textarea :notes %>
+    <%= form.text_area :notes, rows: 5 %>
   </div>
 
   <div>

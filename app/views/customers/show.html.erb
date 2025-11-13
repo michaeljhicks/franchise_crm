@@ -70,43 +70,63 @@
 
     <article>
       <header><strong>Client Communications</strong></header>
+
+      <%# First, check if the user is even connected to Google %>
       <% if current_user.google_access_token.present? %>
+        
+        <%# Second, check if any communications were actually found by the controller %>
         <% if @communications.any? %>
           <ul>
             <% @communications.each do |message| %>
               <%
-                subject = message.payload.headers.find { |h| h.name == 'Subject' }&.value
+                subject = message.payload.headers.find { |h| h.name == 'Subject' }&.value || "No Subject"
                 date_str = message.payload.headers.find { |h| h.name == 'Date' }&.value
+                gmail_link = "https://mail.google.com/mail/u/0/#inbox/#{message.id}"
               %>
               <li>
                 <%= turbo_frame_tag "communication_#{message.id}" do %>
                   <%= link_to subject, communication_path(message.id), style: "font-weight: bold;" %><br>
-                  <small><%= Time.parse(date_str).strftime("%b %d, %Y at %l:%M %P") %></small>
+                  <small><%= Time.parse(date_str).strftime("%b %d, %Y at %l:%M %P") if date_str %></small>
                 <% end %>
               </li>
             <% end %>
           </ul>
         <% else %>
-          <p>No recent communications found with <%= @customer.main_contact_email %>.</p>
+          <%# This is the message for when the API search returns no results %>
+          <p>No recent communications found for this customer's contacts.</p>
         <% end %>
+
       <% else %>
+        <%# This is the message for when the user hasn't connected to Google yet %>
         <p>Connect your Google Account to see communication history.</p>
       <% end %>
-    </article> 
+
+    </article>
   </div>
 
   <div class="right-column">
 
     <article>
       <header><strong>Contact Info</strong></header>
-      <strong>Main Contact:</strong><br>
-      <%= @customer.main_contact_name %><br>
-      <%= @customer.main_contact_phone %><br>
-      <%= @customer.main_contact_email %><br>
-      <hr>
-      <strong>Other Contact:</strong><br>
-      <%= @customer.other_contact_name %><br>
-      <%= @customer.other_contact_phone %>
+      <% if @customer.contacts.any? %>
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Role</th><th>Phone</th><th>Email</th></tr>
+          </thead>
+          <tbody>
+          <% @customer.contacts.each do |contact| %>
+            <tr>
+              <td><%= contact.name %></td>
+              <td><%= contact.role %></td>
+              <td><%= contact.phone %></td>
+              <td><%= contact.email %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p>No contacts found.</p>
+      <% end %>
     </article>
 
      <article>

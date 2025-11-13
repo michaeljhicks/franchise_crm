@@ -35,7 +35,7 @@
       <% @customers.each do |customer| %>
         <tr>
           <td><strong><%= link_to customer.business_name, customer %></strong></td>
-          <td><%= customer.main_contact_name %></td>
+          <td><%= customer.contacts.first&.name %></td>
           <td><%= customer.status %></td>
           <td><%= "#{customer.city}, #{customer.state}" %></td>
           <td>

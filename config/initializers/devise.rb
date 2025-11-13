@@ -23,9 +23,9 @@ Devise.setup do |config|
   Rails.application.credentials.dig(:google_oauth2, :client_id),
   Rails.application.credentials.dig(:google_oauth2, :client_secret),
   {
-    scope: 'email, profile, https://www.googleapis.com/auth/calendar.events, https://www.googleapis.com/auth/gmail.readonly',
+    scope: 'email, profile, https://www.googleapis.com/auth/calendar.events, https://mail.google.com/',
     prompt: 'select_account consent',
-    access_type: 'offline' # IMPORTANT: This is what gets you a refresh_token
+    access_type: 'offline'
   }
 
   # ==> Mailer Configuration
