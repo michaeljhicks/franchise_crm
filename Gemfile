@@ -18,6 +18,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 gem "pagy"
 gem "csv"
+gem 'numbers_and_words'
 
 gem 'omniauth-google-oauth2'
 gem 'google-api-client', '>= 0.53'

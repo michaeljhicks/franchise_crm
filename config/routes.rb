@@ -28,7 +28,11 @@ Rails.application.routes.draw do
   
   resources :contractors
   
-  resources :lease_agreements
+  resources :lease_agreements do
+    member do
+      get :generate_document
+    end
+  end
   
   resources :jobs, only: [:index, :show] do
     member do

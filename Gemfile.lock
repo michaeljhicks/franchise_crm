@@ -249,6 +249,8 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.10-x86_64-linux-musl)
       racc (~> 1.4)
+    numbers_and_words (1.0.2)
+      i18n (<= 2)
     oauth2 (2.0.17)
       faraday (>= 0.17.3, < 4.0)
       jwt (>= 1.0, < 4.0)
@@ -497,6 +499,7 @@ DEPENDENCIES
   jbuilder
   kamal
   letter_opener
+  numbers_and_words
   omniauth-google-oauth2
   pagy
   pg (~> 1.1)

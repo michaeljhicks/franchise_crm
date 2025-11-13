@@ -11,7 +11,7 @@ class GoogleCredentials
     creds = Google::Auth::UserRefreshCredentials.new(
       client_id: Rails.application.credentials.dig(:google_oauth2, :client_id),
       client_secret: Rails.application.credentials.dig(:google_oauth2, :client_secret),
-      scope: 'email profile https://www.googleapis.com/auth/calendar.events https://mail.google.com/',
+      scope: 'email profile https://www.googleapis.com/auth/calendar.events, https://mail.google.com/, https://www.googleapis.com/auth/documents, https://www.googleapis.com/auth/drive',
       access_token: @user.google_access_token,
       refresh_token: @user.google_refresh_token,
       expires_at: @user.google_token_expires_at

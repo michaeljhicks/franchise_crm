@@ -8,8 +8,12 @@
       Machine: <strong><%= link_to @lease_agreement.machine.machine_model, customer_machine_path(@lease_agreement.customer, @lease_agreement.machine) %></strong>
     </p>
   </div>
-  <div>
-    <%= link_to "Edit this lease agreement", edit_lease_agreement_path(@lease_agreement), role: "button", class: "secondary" %>
+  <div role="group">
+    <%= link_to "Edit", edit_lease_agreement_path(@lease_agreement), role: "button", class: "secondary" %>
+    <%= link_to "Generate Google Doc", generate_document_lease_agreement_path(@lease_agreement), 
+            target: "_blank", 
+            role: "button" 
+    %>
   </div>
 </header>
 
@@ -74,7 +78,6 @@
     border: none;
     background-color: #e5e7eb; /* A light gray background */
   }
-  /* Styling for Chrome/Safari */
   progress::-webkit-progress-bar {
     background-color: #e5e7eb;
     border-radius: 9999px;
@@ -83,7 +86,6 @@
     background-color: #3B82F6; /* The blue color we use elsewhere */
     border-radius: 9999px;
   }
-  /* Styling for Firefox */
   progress::-moz-progress-bar {
     background-color: #3B82F6; /* The blue color we use elsewhere */
     border-radius: 9999px;

@@ -1,7 +1,17 @@
 class LeaseAgreementsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_lease_agreement, only: %i[ show edit update destroy ]
+  before_action :set_lease_agreement, only: %i[ show edit update destroy generate_document ]
 
+  def generate_document
+    service = GoogleDocsService.new(current_user)
+    new_document_id = service.generate_lease_from_template(@lease_agreement)
+    doc_url = "https://docs.google.com/document/d/#{new_document_id}/edit"
+    
+    # --- REPLACE `render` with `redirect_to` ---
+    # The `allow_other_host` is crucial for redirecting to an external site like Google.
+    redirect_to doc_url, allow_other_host: true, notice: "Lease document was successfully generated!"
+  end
+  
   def index
     @lease_agreements = current_user.lease_agreements.includes(:customer, :machine)
     @pagy, @lease_agreements = pagy(@lease_agreements.order(lease_start_date: :desc))
@@ -68,6 +78,6 @@ class LeaseAgreementsController < ApplicationController
     end
 
     def lease_agreement_params
-      params.require(:lease_agreement).permit(:lease_start_date, :lease_end_date, :lease_rate, :customer_id, :machine_id)
+      params.require(:lease_agreement).permit(:lease_start_date, :lease_end_date, :lease_rate, :customer_id, :machine_id, :filter_kit)
     end
 end

@@ -23,7 +23,7 @@ Devise.setup do |config|
   Rails.application.credentials.dig(:google_oauth2, :client_id),
   Rails.application.credentials.dig(:google_oauth2, :client_secret),
   {
-    scope: 'email, profile, https://www.googleapis.com/auth/calendar.events, https://mail.google.com/',
+    scope: 'email, profile, https://www.googleapis.com/auth/calendar.events, https://mail.google.com/, https://www.googleapis.com/auth/documents, https://www.googleapis.com/auth/drive',
     prompt: 'select_account consent',
     access_type: 'offline'
   }
