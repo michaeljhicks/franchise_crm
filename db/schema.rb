@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_13_180235) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_13_192107) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -86,10 +86,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_13_180235) do
     t.decimal "lease_rate", precision: 8, scale: 2
     t.bigint "user_id", null: false
     t.bigint "customer_id", null: false
-    t.bigint "machine_id", null: false
+    t.bigint "machine_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "filter_kit"
+    t.integer "status", default: 0, null: false
+    t.string "machine_details"
+    t.string "bin_details"
     t.index ["customer_id"], name: "index_lease_agreements_on_customer_id"
     t.index ["machine_id"], name: "index_lease_agreements_on_machine_id"
     t.index ["user_id"], name: "index_lease_agreements_on_user_id"

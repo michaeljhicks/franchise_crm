@@ -48,9 +48,16 @@ class GoogleDocsService
 
     # --- Equipment Description ---
     # Best if you change the doc to have single placeholders like {{Ice Machine Description}}
-    { replace_all_text: { contains_text: { text: '{{Other Manufacturer}}{{Model}}{{Other Model}} Ice Machine', match_case: false }, replace_text: "#{machine.machine_make} #{machine.machine_model}" } },
-    { replace_all_text: { contains_text: { text: '{{Bin}} Ice Bin', match_case: false }, replace_text: "#{machine.bin_make} #{machine.bin_model}" } },
-    { replace_all_text: { contains_text: { text: '{{Filter Kit}}{{Other Filter}} Water Filtration System', match_case: false }, replace_text: lease_agreement.filter_kit || 'N/A' } },
+    { replace_all_text: { contains_text: { text: '{{Other Manufacturer}}{{Model}}{{Other Model}} Ice Machine', match_case: false },
+      # If a machine is assigned, use its data. Otherwise, use the temporary details.
+      replace_text: lease_agreement.machine.present? ? "#{lease_agreement.machine.machine_make} #{lease_agreement.machine.machine_model}" : lease_agreement.machine_details } },
+    { replace_all_text: {  contains_text: { text: '{{Bin}} Ice Bin', match_case: false }, replace_text: lease_agreement.machine.present? ? "#{lease_agreement.machine.bin_make} #{lease_agreement.machine.bin_model}" : lease_agreement.bin_details
+      }
+    },
+    { replace_all_text: { contains_text: { text: '{{Filter Kit}}{{Other Filter}} Water Filtration System', match_case: false },
+        replace_text: lease_agreement.filter_kit || 'N/A'
+      }
+    },
     # You'll need to add filter info to your `Machine` model to fill in the rest of this
 
     # --- Term & Rent Block ---

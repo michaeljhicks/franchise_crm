@@ -1,8 +1,7 @@
 <%= form_with(model: lease_agreement) do |form| %>
   <% if lease_agreement.errors.any? %>
     <div style="color: red">
-      <h2><%= pluralize(lease_agreement.errors.count, "error") %> prohibited this lease_agreement from being saved:</h2>
-
+      <h2><%= pluralize(lease_agreement.errors.count, "error") %> prohibited this lease agreement from being saved:</h2>
       <ul>
         <% lease_agreement.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -11,37 +10,63 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :lease_start_date, style: "display: block" %>
-    <%= form.date_field :lease_start_date %>
-  </div>
+  <%# --- This "if/else" block shows different fields for new vs. edit --- %>
+  <% if lease_agreement.persisted? %>
+    <%# This is the EDIT page %>
+    <article>
+      <label>Customer</label>
+      <h3><%= lease_agreement.customer.business_name %></h3>
+      <%= form.hidden_field :customer_id %>
+    </article>
+  <% else %>
+    <%# This is the NEW page %>
+    <div>
+      <%= form.label :owner_identifier, "Select a Prospect or Customer" %>
+      <%= form.select :owner_identifier, grouped_options_for_select(@grouped_options), prompt: "Select..." %>
+    </div>
+  <% end %>
+
+  <fieldset>
+    <legend>Equipment Details</legend>
+    <% if lease_agreement.machine.present? %>
+      <label>Assigned Machine:</label>
+      <strong><%= lease_agreement.machine.machine_model %></strong>
+    <% else %>
+      <%= form.label :machine_id, "Assign a Permanent Machine (Optional)" %>
+      <%= form.collection_select :machine_id, @machines || @available_machines || [], :id, ->(m) { "#{m.machine_make} - #{m.machine_model} (S/N: #{m.machine_serial_number})" }, { include_blank: 'Select from inventory...' } %>
+      <hr>
+      <p><small>Or, enter temporary details for a new machine:</small></p>
+      <%= form.label :machine_details, "Machine Make & Model (Temporary)" %>
+      <%= form.text_field :machine_details %>
+      <%= form.label :bin_details, "Bin Make & Model (Temporary)" %>
+      <%= form.text_field :bin_details %>
+    <% end %>
+  </fieldset>
 
   <div>
-    <%= form.label :lease_end_date, style: "display: block" %>
-    <%= form.date_field :lease_end_date %>
-  </div>
-
-  <div>
-    <%= form.label :lease_rate, style: "display: block" %>
-    <%= form.text_field :lease_rate %>
-  </div>
-
-  <div>
-    <%= form.label :customer_id %>
-    <%= form.collection_select :customer_id, @customers, :id, :business_name, prompt: "Select a customer" %>
-  </div>
-
-  <div>
-    <%= form.label :machine_id %>
-    <%# This shows "Make - Model (Serial)" for easy identification %>
-    <%= form.collection_select :machine_id, @machines, :id, ->(m) { "#{m.machine_make} - #{m.machine_model} (#{m.machine_serial_number})" }, prompt: "Select a machine" %>
-  </div>
-
-  <div>
-    <%= form.label :filter_kit, "Filter Kit Details" %>
+    <%= form.label :filter_kit %>
     <%= form.text_field :filter_kit %>
   </div>
-
+  
+  <div class="grid">
+    <div>
+      <%= form.label :lease_start_date %>
+      <%= form.date_field :lease_start_date %>
+    </div>
+    <div>
+      <%= form.label :lease_end_date %>
+      <%= form.date_field :lease_end_date %>
+    </div>
+    <div>
+      <%= form.label :lease_rate %>
+      <%= form.number_field :lease_rate, step: 0.01 %>
+    </div>
+    <div>
+      <%= form.label :status %>
+      <%= form.select :status, LeaseAgreement.statuses.keys.map { |s| [s.humanize.titleize, s] } %>
+    </div>
+  </div>
+  
   <div>
     <%= form.submit %>
   </div>

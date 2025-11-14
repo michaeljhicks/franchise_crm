@@ -1,7 +1,14 @@
 class LeaseAgreement < ApplicationRecord
   belongs_to :user
   belongs_to :customer
-  belongs_to :machine
+  belongs_to :machine, optional: true
+
+  enum :status, {
+    pending: 0,
+    active: 1,
+    early_termination: 2,
+    inactive: 3
+  }
 
   def lease_rate_in_words
     # Return a default string if the rate is missing, to prevent errors.

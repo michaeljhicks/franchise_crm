@@ -19,7 +19,17 @@
       <% @lease_agreements.each do |lease| %>
         <tr>
           <td><%= link_to lease.customer.business_name, lease.customer %></td>
-          <td><%= link_to lease.machine.machine_model, customer_machine_path(lease.customer, lease.machine) %></td>
+          <td>
+            <% if lease.machine.present? %>
+              <%# If a machine exists, link to it %>
+              <%= link_to lease.machine.machine_model, customer_machine_path(lease.customer, lease.machine) %>
+            <% else %>
+              <%# Otherwise, show the manually entered text and a "(Pending)" notice %>
+              <%= lease.machine_details %> <small>(Pending)</small>
+            <% end %>
+          </td>
+          <%# --- END OF FIX --- %>
+
           <td><%= lease.lease_start_date&.strftime("%b %d, %Y") %></td>
           <td><%= lease.lease_end_date&.strftime("%b %d, %Y") || 'Active' %></td>
           <td><%= number_to_currency(lease.lease_rate) %></td>

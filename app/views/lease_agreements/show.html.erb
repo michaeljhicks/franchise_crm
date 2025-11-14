@@ -5,7 +5,13 @@
     <h1>Lease Agreement Details</h1>
     <p>
       For <strong><%= link_to @lease_agreement.customer.business_name, @lease_agreement.customer %></strong> | 
-      Machine: <strong><%= link_to @lease_agreement.machine.machine_model, customer_machine_path(@lease_agreement.customer, @lease_agreement.machine) %></strong>
+      <% if @lease_agreement.machine.present? %>
+        <%# If a machine is assigned, link to it %>
+        Machine: <strong><%= link_to @lease_agreement.machine.machine_model, customer_machine_path(@lease_agreement.customer, @lease_agreement.machine) %></strong>
+      <% else %>
+        <%# Otherwise, display the manually entered details %>
+        Machine: <strong><%= @lease_agreement.machine_details %> (Not yet assigned)</strong>
+      <% end %>
     </p>
   </div>
   <div role="group">
