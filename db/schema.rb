@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_13_192107) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_14_221113) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -135,6 +135,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_13_192107) do
     t.index ["user_id"], name: "index_prospects_on_user_id"
   end
 
+  create_table "quote_items", force: :cascade do |t|
+    t.string "description"
+    t.string "ice_production"
+    t.string "ice_storage"
+    t.string "lease_rate"
+    t.bigint "quote_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["quote_id"], name: "index_quote_items_on_quote_id"
+  end
+
+  create_table "quotes", force: :cascade do |t|
+    t.date "expiration_date"
+    t.bigint "prospect_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["prospect_id"], name: "index_quotes_on_prospect_id"
+    t.index ["user_id"], name: "index_quotes_on_user_id"
+  end
+
   create_table "tasks", force: :cascade do |t|
     t.string "description"
     t.datetime "completed_at"
@@ -185,5 +206,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_13_192107) do
   add_foreign_key "lease_agreements", "users"
   add_foreign_key "machines", "customers"
   add_foreign_key "prospects", "users"
+  add_foreign_key "quote_items", "quotes"
+  add_foreign_key "quotes", "prospects"
+  add_foreign_key "quotes", "users"
   add_foreign_key "tasks", "jobs"
 end

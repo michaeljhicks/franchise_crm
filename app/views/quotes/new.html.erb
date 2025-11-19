@@ -1,0 +1,11 @@
+<% content_for :title, "New quote" %>
+
+<h1>New quote</h1>
+
+<%= render "form", quote: @quote %>
+
+<br>
+
+<div>
+  <%= link_to "Back to quotes", quotes_path %>
+</div>

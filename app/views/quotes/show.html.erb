@@ -1,0 +1,48 @@
+<p style="color: green"><%= notice %></p>
+
+<header style="display: flex; justify-content: space-between; align-items: flex-start;">
+  <div>
+    <h1>Quote for: <%= link_to @quote.prospect.business_name, @quote.prospect %></h1>
+    <p>
+      Valid Until: <%= @quote.expiration_date&.strftime('%B %d, %Y') %>
+    </p>
+  </div>
+  <div style="display: flex; gap: 0.5rem;">
+    <%= link_to "Edit this Quote", edit_quote_path(@quote), role: "button", class: "secondary" %>
+    <%= link_to "Generate Google Doc", generate_document_quote_path(@quote),
+            target: "_blank",
+            role: "button"
+    %>
+  </div>
+</header>
+
+<article>
+  <header><strong>Quote Options</strong></header>
+  <% if @quote.quote_items.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Ice Production (lbs/day)</th>
+          <th>Ice Storage (lbs)</th>
+          <th>Lease Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @quote.quote_items.each do |item| %>
+          <tr>
+            <td><%= item.description %></td>
+            <td><%= item.ice_production %></td>
+            <td><%= item.ice_storage %></td>
+            <td><%= item.lease_rate %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>No items were added to this quote.</p>
+  <% end %>
+</article>
+
+<br>
+<%= link_to "Back to quotes", quotes_path %>

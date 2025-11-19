@@ -1,0 +1,57 @@
+<%= form_with(model: quote) do |form| %>
+  <% if quote.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(quote.errors.count, "error") %> prohibited this quote from being saved:</h2>
+      <ul>
+        <% quote.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <div class="grid">
+    <div>
+      <%= form.label :prospect_id, "Select a Prospect" %>
+      <%= form.collection_select :prospect_id, @prospects, :id, :business_name, prompt: "Choose a prospect..." %>
+    </div>
+    <div>
+      <%= form.label :expiration_date %>
+      <%= form.date_field :expiration_date, value: quote.expiration_date || 7.days.from_now.to_date %>
+    </div>
+  </div>
+
+
+  <fieldset>
+    <legend>Quote Options (up to 3)</legend>
+    <%= form.fields_for :quote_items do |item_form| %>
+      <article>
+        <div class="grid">
+          <div>
+            <%= item_form.label :description %>
+            <%= item_form.text_field :description, placeholder: "e.g., Ice-O-Matic CIM0530 + B42PS" %>
+          </div>
+          <div>
+            <%= item_form.label :ice_production, "Ice Production (lbs/day)" %>
+            <%= item_form.text_field :ice_production, placeholder: "e.g., 520" %>
+          </div>
+        </div>
+        <div class="grid">
+          <div>
+            <%= item_form.label :ice_storage, "Ice Storage (lbs)" %>
+            <%= item_form.text_field :ice_storage, placeholder: "e.g., 340" %>
+          </div>
+          <div>
+            <%= item_form.label :lease_rate, "Lease Rate" %>
+            <%= item_form.text_field :lease_rate, placeholder: "e.g., $250 / mo" %>
+          </div>
+        </div>
+      </article>
+    <% end %>
+  </fieldset>
+  
+
+  <div style="margin-top: 1rem;">
+    <%= form.submit %>
+  </div>
+<% end %>

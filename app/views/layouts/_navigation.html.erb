@@ -8,14 +8,14 @@
 
     <div class="desktop-links">
       <% if user_signed_in? %>
-        <%= link_to "Dashboard", root_path %>
         <%= link_to "Customers", customers_path, class: "highlight-link" %>        
         <%= link_to "Contractors", contractors_path, class: "highlight-link" %>
         <%= link_to "Jobs", jobs_path %> 
         <%= link_to "Machines", machines_path %>
         <%= link_to "Leases", lease_agreements_path %>     
         <%= link_to "Boneyard", boneyard_machines_path %>
-        <%= link_to "Prospects", prospects_path, class: "highlight-link" %>           
+        <%= link_to "Prospects", prospects_path, class: "highlight-link" %>
+        <%= link_to "Quotes", quotes_path %>           
         <%= link_to "Lead Capture", new_prospect_path, class: "highlight-link" %>
       <% end %>
     </div>
@@ -34,14 +34,13 @@
       <div class="mobile-dropdown">
         <button class="hamburger-button">☰</button>
         <div class="mobile-dropdown-content">
-          <%# --- ADDED LEASE AGREEMENTS AND STANDARDIZED TEXT --- %>
-          <%= link_to "Dashboard", root_path %>
           <%= link_to "Customers", customers_path %>
           <%= link_to "Machines", machines_path %>
           <%= link_to "Boneyard", boneyard_machines_path %>
           <%= link_to "Jobs", jobs_path %>
           <%= link_to "Contractors", contractors_path %>
           <%= link_to "Prospects", prospects_path %>
+          <%= link_to "Quotes", quotes_path %>
           <%= link_to "Lease Agreements", lease_agreements_path %>
           <%= link_to "Lead Capture", new_prospect_path %>
           <hr>

@@ -1,6 +1,7 @@
 # config/routes.rb
 
 Rails.application.routes.draw do
+  resources :quotes
   get "communications/show"
   get "google_connections/destroy"
   # 1. Set the root path for logged-in users.
@@ -50,6 +51,12 @@ Rails.application.routes.draw do
   resources :prospects do
     member do
       post :convert
+    end
+  end
+
+  resources :quotes do
+    member do
+      get :generate_document
     end
   end
 

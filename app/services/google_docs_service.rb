@@ -5,6 +5,7 @@ require 'googleauth'
 
 class GoogleDocsService
   TEMPLATE_ID = '18-oXGeW2eTHJK_Qb9cfH3Inj9AlXl7MtfgyEJX6_PVg'
+  QUOTE_TEMPLATE_ID = '1ANZ1Arb4RCaYWvqh10fY0XD8AbCXy0CL2vmrCHdT8QU'
 
   def initialize(user)
     @user = user
@@ -74,5 +75,55 @@ class GoogleDocsService
 
     # 4. Return the ID of the new document
     return new_document_id
+  end
+
+  def generate_quote_from_template(quote)
+    prospect = quote.prospect
+    franchisee = quote.user
+    items = quote.quote_items # This will be an array of up to 3 quote items
+
+    # 1. Copy the Quote Template
+    new_doc_name = "Quote for #{prospect.business_name}"
+    copied_file_req = Google::Apis::DriveV3::File.new(name: new_doc_name)
+    copied_file = @drive_service.copy_file(QUOTE_TEMPLATE_ID, copied_file_req)
+    new_doc_id = copied_file.id
+
+    # 2. Prepare the replacement requests array
+    requests = [
+      # --- Top-level Info ---
+      { replace_all_text: { contains_text: { text: '{{Business Name}}', match_case: false }, replace_text: prospect.business_name || '' } },
+      { replace_all_text: { contains_text: { text: '{{Location}}', match_case: false }, replace_text: prospect.business_location || '' } },
+      { replace_all_text: { contains_text: { text: '{{Customer First Name}}', match_case: false }, replace_text: prospect.contact_name || '' } },
+      { replace_all_text: { contains_text: { text: '{{Expiration Date}}', match_case: false }, replace_text: quote.expiration_date&.strftime('%B %d, %Y') || '' } },
+      { replace_all_text: { contains_text: { text: '{{Branch Number}}', match_case: false }, replace_text: franchisee.franchise_phone || '' } },
+      # Assuming Ice Machine Type is a general category, you might add this to your Quote model
+      # { replace_all_text: { contains_text: { text: '{{Ice Machine Type}}', match_case: false }, replace_text: quote.machine_type || '' } },
+
+      # --- Line Item 1 ---
+      # The `&.` safe navigation operator prevents errors if the item doesn't exist
+      { replace_all_text: { contains_text: { text: '{{Machine Make1}} {{Machine Model1}} + {{Bin Make1}} {{Bin Model1}}', match_case: false }, replace_text: items[0]&.description || '' } },
+      { replace_all_text: { contains_text: { text: '{{Production1}}', match_case: false }, replace_text: items[0]&.ice_production || '' } },
+      { replace_all_text: { contains_text: { text: '{{Storage1}}', match_case: false }, replace_text: items[0]&.ice_storage || '' } },
+      { replace_all_text: { contains_text: { text: '${{Rate1}}/{{Rate Type1}}', match_case: false }, replace_text: items[0]&.lease_rate || '' } },
+      
+      # --- Line Item 2 ---
+      { replace_all_text: { contains_text: { text: '{{Machine Make2}} {{Machine Model2}} + {{Bin Make2}} {{Bin Model2}}', match_case: false }, replace_text: items[1]&.description || '' } },
+      { replace_all_text: { contains_text: { text: '{{Production2}}', match_case: false }, replace_text: items[1]&.ice_production || '' } },
+      { replace_all_text: { contains_text: { text: '{{Storage2}}', match_case: false }, replace_text: items[1]&.ice_storage || '' } },
+      { replace_all_text: { contains_text: { text: '${{Rate2}}/{{Rate Type2}}', match_case: false }, replace_text: items[1]&.lease_rate || '' } },
+
+      # --- Line Item 3 ---
+      { replace_all_text: { contains_text: { text: '{{Machine Make3}} {{Machine Model3}} + {{Bin Make3}} {{Bin Model3}}', match_case: false }, replace_text: items[2]&.description || '' } },
+      { replace_all_text: { contains_text: { text: '{{Production3}}', match_case: false }, replace_text: items[2]&.ice_production || '' } },
+      { replace_all_text: { contains_text: { text: '{{Storage3}}', match_case: false }, replace_text: items[2]&.ice_storage || '' } },
+      { replace_all_text: { contains_text: { text: '${{Rate3}}/{{Rate Type3}}', match_case: false }, replace_text: items[2]&.lease_rate || '' } }
+    ]
+    
+    # 3. Batch update the new Google Doc
+    batch_update_req = Google::Apis::DocsV1::BatchUpdateDocumentRequest.new(requests: requests)
+    @docs_service.batch_update_document(new_doc_id, batch_update_req)
+
+    # 4. Return the ID of the new document
+    return new_doc_id
   end
 end
