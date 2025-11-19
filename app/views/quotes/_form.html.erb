@@ -12,8 +12,8 @@
   
   <div class="grid">
     <div>
-      <%= form.label :prospect_id, "Select a Prospect" %>
-      <%= form.collection_select :prospect_id, @prospects, :id, :business_name, prompt: "Choose a prospect..." %>
+      <%= form.label :owner_identifier, "Select a Prospect or Customer" %>
+      <%= form.select :owner_identifier, grouped_options_for_select(@grouped_options, params.dig(:quote, :owner_identifier)), prompt: "Choose..." %>
     </div>
     <div>
       <%= form.label :expiration_date %>
@@ -24,31 +24,49 @@
 
   <fieldset>
     <legend>Quote Options (up to 3)</legend>
-    <%= form.fields_for :quote_items do |item_form| %>
-      <article>
-        <div class="grid">
-          <div>
-            <%= item_form.label :description %>
-            <%= item_form.text_field :description, placeholder: "e.g., Ice-O-Matic CIM0530 + B42PS" %>
+    <div data-controller="dynamic-form">
+      <%= form.fields_for :quote_items do |item_form| %>
+        <article>
+          <div class="grid">
+            <div>
+              <%= item_form.label :machine_make %>
+              <%= item_form.select :machine_make, Machine::MACHINE_MAKES, { prompt: 'Select a make' }, 
+                                    { data: { action: "change->dynamic-form#toggleModelField" } } %>
+            </div>
+            <div data-dynamic-form-target="modelContainer">
+              <%= item_form.label :machine_model %>
+              <%= item_form.text_field :machine_model %>
+            </div>
           </div>
-          <div>
-            <%= item_form.label :ice_production, "Ice Production (lbs/day)" %>
-            <%= item_form.text_field :ice_production, placeholder: "e.g., 520" %>
+          <div class="grid">
+             <div>
+              <%= item_form.label :bin_make %>
+              <%= item_form.select :bin_make, Machine::MACHINE_MAKES, { prompt: 'Select a make' } %>
+            </div>
+            <div>
+              <%= item_form.label :bin_model %>
+              <%= item_form.text_field :bin_model %>
+            </div>
           </div>
-        </div>
-        <div class="grid">
-          <div>
-            <%= item_form.label :ice_storage, "Ice Storage (lbs)" %>
-            <%= item_form.text_field :ice_storage, placeholder: "e.g., 340" %>
+          <div class="grid">
+            <div>
+              <%= item_form.label :ice_production, "Ice Production (lbs/day)" %>
+              <%= item_form.text_field :ice_production %>
+            </div>
+            <div>
+              <%= item_form.label :ice_storage, "Ice Storage (lbs)" %>
+              <%= item_form.text_field :ice_storage %>
+            </div>
+            <div>
+              <%= item_form.label :lease_rate, "Lease Rate" %>
+              <%= item_form.text_field :lease_rate, placeholder: "e.g., $250 / mo" %>
+            </div>
           </div>
-          <div>
-            <%= item_form.label :lease_rate, "Lease Rate" %>
-            <%= item_form.text_field :lease_rate, placeholder: "e.g., $250 / mo" %>
-          </div>
-        </div>
-      </article>
-    <% end %>
+        </article>
+      <% end %>
+    </div>
   </fieldset>
+
   
 
   <div style="margin-top: 1rem;">

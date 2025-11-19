@@ -1,16 +1,36 @@
-<p style="color: green"><%= notice %></p>
+<header style="display: flex; justify-content: space-between; align-items: center;">
+  <h1>Quotes</h1>
+  <%= link_to "New Quote", new_quote_path, role: "button" %>
+</header>
 
-<% content_for :title, "Quotes" %>
-
-<h1>Quotes</h1>
-
-<div id="quotes">
-  <% @quotes.each do |quote| %>
-    <%= render quote %>
-    <p>
-      <%= link_to "Show this quote", quote %>
-    </p>
-  <% end %>
+<div class="overflow-auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Prospect</th>
+        <th>Created</th>
+        <th>Expires</th>
+        <th>Items</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @quotes.each do |quote| %>
+        <tr>
+          <td><%= link_to quote.prospect.business_name, quote.prospect %></td>
+          <td><%= quote.created_at.strftime("%b %d, %Y") %></td>
+          <td><%= quote.expiration_date&.strftime("%b %d, %Y") %></td>
+          <td><%= quote.quote_items.count %></td>
+          <td>
+            <div role="group">
+              <%= link_to "View", quote, class: "secondary outline" %>
+              <%= link_to "Edit", edit_quote_path(quote), class: "secondary outline" %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
 
-<%= link_to "New quote", new_quote_path %>
+<nav><%== pagy_nav(@pagy) %></nav>

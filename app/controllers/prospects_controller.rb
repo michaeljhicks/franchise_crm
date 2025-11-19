@@ -59,8 +59,10 @@ class ProspectsController < ApplicationController
     end
   end
 
+  # app/controllers/prospects_controller.rb
+
   def convert
-    # 1. Prepare the discovery notes
+    # 1. Prepare the discovery notes (this part is good)
     discovery_notes = <<~NOTES
       --- Lead Discovery Notes ---
       Business Type: #{@prospect.business_type}
@@ -74,16 +76,23 @@ class ProspectsController < ApplicationController
       #{@prospect.notes}
     NOTES
 
-    # 2. Create a new customer from the prospect's data
+    # --- THIS IS THE FIX ---
+    # 2. Create a new customer, passing the contact info via `contacts_attributes`.
     @customer = Customer.new(
       business_name: @prospect.business_name,
-      street_address: @prospect.business_location, # Assuming location maps to street address
-      main_contact_name: @prospect.contact_name,
-      main_contact_phone: @prospect.phone,
-      main_contact_email: @prospect.email,
+      street_address: @prospect.business_location,
       notes: discovery_notes,
-      user: current_user # Assign to the current franchisee
+      user: current_user, # Assign to the current franchisee
+      
+      # This hash creates the first Contact object associated with the new Customer.
+      contacts_attributes: [{
+        name: @prospect.contact_name,
+        phone: @prospect.phone,
+        email: @prospect.email,
+        role: "Primary" # Assign a default role
+      }]
     )
+    # --- END OF FIX ---
 
     # 3. Try to save the new customer
     if @customer.save
@@ -99,7 +108,8 @@ class ProspectsController < ApplicationController
   private
 
   def set_prospect
-    @prospect = current_user.prospects.find(params[:id])
+    # Add .includes(:quotes) to pre-load any quotes associated with this prospect
+    @prospect = current_user.prospects.includes(:quotes).find(params[:id])
   end
 
     # Only allow a list of trusted parameters through.

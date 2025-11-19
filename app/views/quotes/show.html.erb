@@ -10,8 +10,8 @@
   <div style="display: flex; gap: 0.5rem;">
     <%= link_to "Edit this Quote", edit_quote_path(@quote), role: "button", class: "secondary" %>
     <%= link_to "Generate Google Doc", generate_document_quote_path(@quote),
-            target: "_blank",
-            role: "button"
+              target: "_blank",
+              role: "button" 
     %>
   </div>
 </header>
@@ -22,16 +22,22 @@
     <table>
       <thead>
         <tr>
-          <th>Description</th>
-          <th>Ice Production (lbs/day)</th>
-          <th>Ice Storage (lbs)</th>
+          <th>Machine Make</th>
+          <th>Machine Model</th>
+          <th>Bin Make</th>
+          <th>Bin Model</th>
+          <th>Ice Production</th>
+          <th>Ice Storage</th>
           <th>Lease Rate</th>
         </tr>
       </thead>
       <tbody>
         <% @quote.quote_items.each do |item| %>
           <tr>
-            <td><%= item.description %></td>
+            <td><%= item.machine_make %></td>
+            <td><%= item.machine_model %></td>
+            <td><%= item.bin_make %></td>
+            <td><%= item.bin_model %></td>
             <td><%= item.ice_production %></td>
             <td><%= item.ice_storage %></td>
             <td><%= item.lease_rate %></td>
@@ -45,4 +51,14 @@
 </article>
 
 <br>
-<%= link_to "Back to quotes", quotes_path %>
+
+<div>
+  <%= link_to "Back to quotes", quotes_path %>
+  <div style="margin-top: 2rem;">
+    <%= button_to "Destroy This Quote", @quote, 
+                  method: :delete, 
+                  form: { data: { turbo_confirm: "Are you sure?" } },
+                  class: "contrast"
+    %>
+  </div>
+</div>

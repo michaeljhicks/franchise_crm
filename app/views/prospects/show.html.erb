@@ -1,10 +1,100 @@
+<%# app/views/prospects/show.html.erb %>
+
 <p style="color: green"><%= notice %></p>
 
-<%= render @prospect %>
+<%# --- HEADER --- %>
+<header style="display: flex; justify-content: space-between; align-items: flex-start;">
+  <div>
+    <h1><%= @prospect.business_name %></h1>
+    <p>Lead / Prospect</p>
+  </div>
+  <div role="group">
+    <%= link_to "Edit Prospect", edit_prospect_path(@prospect), role: "button", class: "secondary" %>
+    <%= button_to "Convert to Customer", convert_prospect_path(@prospect), method: :post, form: { data: { turbo_confirm: "Are you sure? This will create a new Customer and delete this Prospect."} }, class: "contrast" %>
+  </div>
+</header>
 
-<div>
-  <%= link_to "Edit this prospect", edit_prospect_path(@prospect) %> |
-  <%= link_to "Back to prospects", prospects_path %>
+<%# --- TWO-COLUMN GRID LAYOUT --- %>
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
 
-  <%= button_to "Destroy this prospect", @prospect, method: :delete %>
+  <%# --- LEFT COLUMN (Discovery Notes & Quotes) --- %>
+  <div class="left-column">
+    <article>
+      <header><strong>Discovery Notes</strong></header>
+      <div class="grid">
+        <div>
+          <strong>Business Type:</strong>
+          <p><%= simple_format(@prospect.business_type) %></p>
+        </div>
+        <div>
+          <strong>Hours:</strong>
+          <p><%= simple_format(@prospect.hours) %></p>
+        </div>
+      </div>
+      <div class="grid">
+        <div>
+          <strong>Ice Usage:</strong>
+          <p><%= simple_format(@prospect.ice_usage) %></p>
+        </div>
+        <div>
+          <strong>Ice Shape Preference:</strong>
+          <p><%= simple_format(@prospect.ice_shape) %></p>
+        </div>
+      </div>
+      <div>
+        <strong>Seating Capacity / Volume:</strong>
+        <p><%= simple_format(@prospect.seating_capacity) %></p>
+      </div>
+      <div>
+        <strong>Special Circumstances:</strong>
+        <p><%= simple_format(@prospect.special_circumstances) %></p>
+      </div>
+    </article>
+    
+    <article>
+      <header style="display: flex; justify-content: space-between; align-items: center;">
+        <strong>Quotes</strong>
+        <%= link_to "+ New Quote", new_quote_path(prospect_id: @prospect.id), role: "button", class: "outline" %>
+      </header>
+      <% if @prospect.quotes.any? %>
+        <table>
+          <thead><tr><th>Created</th><th>Expires</th><th>Items</th><th></th></tr></thead>
+          <tbody>
+            <% @prospect.quotes.order(created_at: :desc).each do |quote| %>
+              <tr>
+                <td><%= quote.created_at.strftime("%b %d, %Y") %></td>
+                <td><%= quote.expiration_date&.strftime("%b %d, %Y") %></td>
+                <td><%= quote.quote_items.count %></td>
+                <td><%= link_to "View", quote, class: "secondary outline" %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p>No quotes have been created for this prospect yet.</p>
+      <% end %>
+    </article>
+  </div>
+
+  <%# --- RIGHT COLUMN (Contact Info) --- %>
+  <div class="right-column">
+    <article>
+      <header><strong>Contact Info</strong></header>
+      <strong>Contact Name:</strong><br>
+      <%= @prospect.contact_name %><br>
+      <hr>
+      <strong>Business Location:</strong><br>
+      <%= @prospect.business_location %><br>
+      <hr>
+      <strong>Email:</strong><br>
+      <%= @prospect.email %><br>
+      <hr>
+      <strong>Phone:</strong><br>
+      <%= @prospect.phone %>
+    </article>
+  </div>
+
 </div>
+
+<br>
+<%= link_to "Back to all prospects", prospects_path %>
