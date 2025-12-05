@@ -31,6 +31,12 @@
   <h3>Profile Information</h3>
 
   <div>
+    <%= f.label :gmail_alias, "Gmail Alias for Sending" %>
+    <small>Enter the verified 'Send mail as' alias you want to use for outgoing emails.</small>
+    <%= f.email_field :gmail_alias, placeholder: "e.g., your-franchise@iceworksus.com" %>
+  </div>
+
+  <div>
     <%= f.label :owner_name %>
     <%= f.text_field :owner_name %>
   </div>

@@ -1,0 +1,35 @@
+<%= turbo_frame_tag "modal" do %>
+  <article>
+    <header>
+      <a href="<%= customer_path(@customer) %>" class="close" data-turbo-action="advance"></a>
+      <strong>Compose Email to <%= @customer.business_name %></strong>
+    </header>
+
+    <%= form_with url: communications_path, method: :post do |form| %>
+      <%= hidden_field_tag :customer_id, @customer.id %>
+      <div>
+        <%= label_tag :to, "To:" %>
+        <%= text_field_tag :to, @customer.contacts.first&.email %>
+      </div>
+      
+      <div>
+        <label>From:</label>
+        <p><strong><%= current_user.gmail_alias %></strong></p>
+        <%= hidden_field_tag :from, current_user.gmail_alias %>
+      </div>
+
+      <div>
+        <%= label_tag :subject, "Subject:" %>
+        <%= text_field_tag :subject %>
+      </div>
+      <div>
+        <%= label_tag :body, "Body:" %>
+        <%= text_area_tag :body, nil, rows: 10 %>
+      </div>
+      
+      <footer style="display: flex; justify-content: flex-end;">
+        <%= form.submit "Send Email" %>
+      </footer>
+    <% end %>
+  </article>
+<% end %>

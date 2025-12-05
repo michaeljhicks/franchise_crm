@@ -24,26 +24,15 @@ class CustomersController < ApplicationController
   # app/controllers/customers_controller.rb
 
   def show
-    # 1. Initialize @communications to a default empty array.
     @communications = []
-    
-    # 2. Only proceed if the user is connected to Google.
-    if current_user.google_access_token.present?
-      
-      # 3. Pluck all the valid email addresses from the customer's contacts.
+    if current_user.google_access_token.present? && current_user.gmail_alias.present?
       contact_emails = @customer.contacts.pluck(:email).compact_blank
-
-      # 4. Only call the Gmail service if we actually have emails to search for.
       if contact_emails.any?
-        
-        # 5. Initialize the service and get the communications for this customer.
         service = GmailService.new(current_user)
-        @communications = service.list_communications(contact_emails)
+        # Pass the alias as the second argument
+        @communications = service.list_communications(contact_emails, current_user.gmail_alias)
       end
     end
-
-    # The @customer is already found by the set_customer before_action.
-    # The view will now receive either the found emails or an empty array.
   end
 
   # app/controllers/customers_controller.rb

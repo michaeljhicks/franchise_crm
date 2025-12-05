@@ -61,7 +61,8 @@ Rails.application.routes.draw do
   end
 
   resource :google_connection, only: [:destroy]
-  resources :communications, only: [:show]
+  # config/routes.rb
+  resources :communications, only: [:new, :create, :show]
 
 
   # 5. Rails default health check route.

@@ -9,12 +9,18 @@ class GmailService
     @service.authorization = GoogleCredentials.new(user).credentials
   end
 
-  def list_communications(emails, max_results: 5)
-    # If the emails array is blank or empty, do nothing.
-    return [] if emails.blank?
+  def list_communications(customer_emails, user_alias, max_results: 5)
+    return [] if customer_emails.blank? || user_alias.blank?
 
-    # Build a single, large query string by joining all parts with " OR ".
-    query = emails.map { |email| "(from:#{email} OR to:#{email})" }.join(' OR ')
+    # Build a highly specific query:
+    # "((from:user@alias.com to:contact@a.com) OR (from:contact@a.com to:user@alias.com)) OR ((from:user@alias.com to:contact@b.com) OR (from:contact@b.com to:user@alias.com))"
+    query_parts = customer_emails.map do |customer_email|
+      "((from:#{user_alias} to:#{customer_email}) OR (from:#{customer_email} to:#{user_alias}))"
+    end
+    query = query_parts.join(' OR ')
+
+    puts "  [GmailService] - Searching with query: #{query}"
+
 
     begin
       result = @service.list_user_messages('me', q: query, max_results: max_results)
@@ -69,6 +75,36 @@ class GmailService
     end
     
     decoded_body.force_encoding('UTF-8').lines.first(15).join.strip
+  end
+
+  def send_email(to:, from:, subject:, body:)
+    raise ArgumentError, "Recipient (To) address cannot be blank." if to.to_s.strip.blank?
+    raise ArgumentError, "Sender (From) address cannot be blank." if from.to_s.strip.blank?
+
+
+    message = Mail.new(
+      to:      to.to_s.strip,
+      from:    from.to_s.strip,
+      subject: subject,
+      body:    body
+    )
+    
+    message.charset = 'UTF-8'
+
+
+    puts "--- GENERATED EMAIL RAW SOURCE ---"
+    puts message.encoded
+    puts "----------------------------------"
+
+    encoded_message = Base64.urlsafe_encode64(message.encoded)
+    gmail_message = Google::Apis::GmailV1::Message.new(raw: encoded_message)
+
+    @service.send_user_message('me', gmail_message)
+    
+    return nil # Success
+  rescue => e
+    puts "[GmailService] - ERROR sending email via Gmail API: #{e.message}"
+    return e # Failure
   end
 
   private
