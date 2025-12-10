@@ -42,69 +42,88 @@ class GmailService
     @service.get_user_message('me', message_id, format: 'metadata', metadata_headers: ['Subject', 'Date'])
   end
 
+  # app/services/gmail_service.rb
+
   def get_message_body(message_id)
-    full_message = @service.get_user_message('me', message_id, format: 'full')
-    return "Could not retrieve email." unless full_message&.payload
+    # 1. Fetch the full message from Gmail
+    message = @service.get_user_message(
+      'me',
+      message_id,
+      format: 'full'
+    )
 
-    plain_text_part = find_plain_text_part(full_message.payload)
-    return "No plain text content found." unless plain_text_part&.body
+    payload = message.payload
 
-    body = plain_text_part.body
-    encoded_data = nil
+    # 2. Find the text/plain part (or fall back to the first part / payload)
+    part =
+      if payload.parts&.any?
+        payload.parts.find { |p| p.mime_type == 'text/plain' } || payload.parts.first
+      else
+        payload
+      end
 
-    # --- THIS IS THE NEW LOGIC ---
-    if body.data.present?
-      # Case 1: The data is small and was sent inline.
-      encoded_data = body.data
-    elsif body.attachment_id.present?
-      # Case 2: The data is large and we need to make a second API call.
-      puts "  [GmailService] - Body data is an attachment, fetching it now..."
-      attachment = @service.get_user_message_attachment('me', message_id, body.attachment_id)
-      encoded_data = attachment.data if attachment
-    end
-    # --- END OF NEW LOGIC ---
-    
-    return "No content in email body." if encoded_data.blank?
+    data = part.body&.data.to_s
 
-    decoded_body = ""
-    begin
-      decoded_body = Base64.urlsafe_decode64(encoded_data)
-    rescue ArgumentError
-      puts "  [GmailService] - Rescuing ArgumentError: Body data was not valid Base64. Using as plain text."
-      decoded_body = encoded_data
-    end
-    
-    decoded_body.force_encoding('UTF-8').lines.first(15).join.strip
+    # 3. Decode base64 if it *is* base64, otherwise use as-is
+    decoded_body =
+      begin
+        Base64.urlsafe_decode64(data)
+      rescue ArgumentError
+        Rails.logger.info "[GmailService] - Rescuing ArgumentError: Body data was not valid Base64. Using as plain text."
+        data
+      end
+
+    # 4. Make the string safely UTF-8 (no more invalid byte sequence errors)
+    safe = decoded_body.dup
+    safe.force_encoding(Encoding::ASCII_8BIT) # treat as raw bytes first
+    safe = safe.encode(
+      Encoding::UTF_8,
+      invalid: :replace,
+      undef:   :replace,
+      replace: "�"  # or "" if you prefer to drop bad bytes
+    )
+
+    # 5. Return a short preview (first 15 lines)
+    safe.lines.first(15).join.strip
   end
 
+
   def send_email(to:, from:, subject:, body:)
-    raise ArgumentError, "Recipient (To) address cannot be blank." if to.to_s.strip.blank?
-    raise ArgumentError, "Sender (From) address cannot be blank." if from.to_s.strip.blank?
+    raise ArgumentError, "Recipient (To) address cannot be blank."  if to.to_s.strip.blank?
+    raise ArgumentError, "Sender (From) address cannot be blank."    if from.to_s.strip.blank?
 
+    # 1. Build RFC 2822 email with Mail gem
+    message = Mail.new do
+      to      to.to_s.strip
+      from    from.to_s.strip
+      subject subject.to_s
 
-    message = Mail.new(
-      to:      to.to_s.strip,
-      from:    from.to_s.strip,
-      subject: subject,
-      body:    body
-    )
-    
-    message.charset = 'UTF-8'
+      text_part do
+        body body.to_s
+      end
+    end
 
+    # 2. Get raw RFC 2822 content (Mail.encoded already uses CRLF)
+    raw_content = message.encoded
 
-    puts "--- GENERATED EMAIL RAW SOURCE ---"
-    puts message.encoded
-    puts "----------------------------------"
+    # (Optional: normalize line endings if you want to be extra sure)
+    # raw_content = raw_content.gsub(/\r?\n/, "\r\n")
 
-    encoded_message = Base64.urlsafe_encode64(message.encoded)
-    gmail_message = Google::Apis::GmailV1::Message.new(raw: encoded_message)
+    puts "--- DEBUG: RFC 2822 Email Content (sent to Gmail::Message#raw) ---"
+    puts raw_content
+    puts "-----------------------------------------------------------------"
 
+    # 3. IMPORTANT: DO **NOT** base64 encode here.
+    #    The google-api-ruby-client will base64url-encode `raw` automatically.
+    gmail_message = Google::Apis::GmailV1::Message.new(raw: raw_content)
+
+    # 4. Send via Gmail API
     @service.send_user_message('me', gmail_message)
-    
-    return nil # Success
+
+    nil
   rescue => e
-    puts "[GmailService] - ERROR sending email via Gmail API: #{e.message}"
-    return e # Failure
+    puts "[GmailService] API ERROR: #{e.class}: #{e.message}"
+    raise
   end
 
   private
