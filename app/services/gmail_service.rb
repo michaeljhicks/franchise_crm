@@ -123,7 +123,7 @@ class GmailService
     nil
   rescue => e
     puts "[GmailService] API ERROR: #{e.class}: #{e.message}"
-    raise
+    return e
   end
 
   private
