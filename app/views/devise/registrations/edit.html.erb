@@ -1,9 +1,9 @@
 <h2>Edit <%= resource_name.to_s.humanize %></h2>
 <article>
-  <header><strong>Google Calendar Integration</strong></header>
+  <header><strong>Google Integration</strong></header>
   <% if current_user.google_access_token.present? %>
     <p style="color: green;">
-      ✓ Your account is connected to Google Calendar.
+      ✓ Your account is connected to Google.
     </p>
     <%= button_to "Disconnect from Google", google_connection_path, 
                   method: :delete,
@@ -12,7 +12,7 @@
     %>
   <% else %>
     <p>Connect your account to sync jobs with Google Calendar and view client communications from Gmail.</p>
-    <%= link_to "Connect to Google Calendar", user_google_oauth2_omniauth_authorize_path, 
+    <%= link_to "Connect to Google", user_google_oauth2_omniauth_authorize_path, 
                 role: "button", 
                 data: { turbo: "false" } 
     %>
