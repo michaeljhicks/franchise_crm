@@ -1,8 +1,7 @@
-# Pin npm packages by running ./bin/importmap
-
 pin "application"
+pin "@hotwired/turbo-rails", to: "turbo.min.js", preload: true
+pin "@hotwired/stimulus", to: "stimulus.min.js", preload: true
+pin "@hotwired/stimulus-loading", to: "stimulus-loading.js", preload: true
 
-# config/importmap.rb
-
-# We are pointing directly to the CDN to bypass your local download/SSL issues
-pin "@hotwired/turbo-rails", to: "https://ga.jspm.io/npm:@hotwired/turbo-rails@8.0.4/app/javascript/turbo/index.js"
+pin "controllers", to: "controllers/index.js"
+pin_all_from "app/javascript/controllers", under: "controllers"

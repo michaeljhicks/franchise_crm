@@ -13,4 +13,12 @@ class Customer < ApplicationRecord
     active: 'Active',
     inactive: 'Inactive'
   }
+
+  def full_address
+    [street_address, city, state, zip].compact.join(', ')
+  end
+
+  geocoded_by :full_address
+
+  after_validation :geocode, if: ->(obj){ obj.street_address.present? && obj.street_address_changed? }
 end

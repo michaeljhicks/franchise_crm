@@ -105,3 +105,8 @@
   .desktop-links, .desktop-only { display: flex; align-items: center; gap: 1rem; }
   .mobile-dropdown { display: none; }
 }
+
+.gm-style img {
+  max-width: none !important;
+  height: auto !important;
+}

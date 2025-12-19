@@ -51,6 +51,7 @@ gem "google-apis-gmail_v1"
 gem "google-apis-calendar_v3"
 gem "google-apis-drive_v3"
 gem "google-apis-docs_v1"
+gem 'geocoder'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

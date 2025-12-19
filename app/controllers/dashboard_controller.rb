@@ -35,5 +35,24 @@ class DashboardController < ApplicationController
     @month_after_next_jobs = current_user.jobs
                                           .where(scheduled_date_time: month_after_next_range)
                                           .order(:scheduled_date_time)
+
+    # --- Map Data Logic ---
+    # 1. Fetch customers that belong to this user AND have valid coordinates
+    customers_with_locations = current_user.customers.where.not(latitude: nil)
+
+    # 2. Build the JSON structure for the map
+    @map_markers = customers_with_locations.map do |customer|
+      {
+        lat: customer.latitude,
+        lng: customer.longitude,
+        title: customer.business_name,
+        # HTML for the popup bubble when you click a pin
+        info_window_html: "
+          <strong>#{customer.business_name}</strong><br>
+          #{customer.city}, #{customer.state}<br>
+          <a href='/customers/#{customer.id}'>View Customer</a>
+        "
+      }
+    end                                      
   end
 end
