@@ -48,5 +48,7 @@
       <% end %>
     </tbody>
   </table>
-  <nav><%== pagy_nav(@pagy) %></nav>
+  <div style="margin-top: 1rem;">
+    <%= paginate @customers %>
+  </div>
 </div>

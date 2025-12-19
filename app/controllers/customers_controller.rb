@@ -1,29 +1,20 @@
 class CustomersController < ApplicationController
-  before_action :authenticate_user! # ADD THIS LINE
+  before_action :authenticate_user!
   before_action :set_customer, only: %i[ show edit update destroy ]
 
+  # GET /customers
   def index
-    # Start with the base scope and eager-load contacts for display
-    customers = current_user.customers.includes(:contacts)
-
-    @total_customers = customers.count
-
-    if params[:query].present?
-      search_term = "%#{params[:query]}%"
-      # We use `distinct` to prevent duplicate customer results if a customer has multiple contacts that match.
-      customers = customers.left_joins(:contacts).distinct.where(
-        "customers.business_name ILIKE ? OR contacts.name ILIKE ? OR customers.city ILIKE ?",
-        search_term, search_term, search_term
-      )
-    end
-
-    # The pagy call remains the same
-    @pagy, @customers = pagy(customers.order(:business_name), items: 20)
+    @customer_count = current_user.customers.count
+    @customers = current_user.customers.order(:business_name).page(params[:page]).per(20)
+    
+    # Pre-load contacts to avoid N+1 queries if you list them in the index
+    @contacts = Contact.where(customer_id: @customers.pluck(:id))
   end
 
-  # app/controllers/customers_controller.rb
-
+  # GET /customers/1
   def show
+    # 1. Gmail Logic
+    # Fetches recent emails if the user has connected their Google account
     @communications = []
     if current_user.google_access_token.present? && current_user.gmail_alias.present?
       contact_emails = @customer.contacts.pluck(:email).compact_blank
@@ -33,78 +24,76 @@ class CustomersController < ApplicationController
         @communications = service.list_communications(contact_emails, current_user.gmail_alias)
       end
     end
+
+    # 2. Google Maps Logic (Single Pin)
+    # Prepares the data for the map controller if coordinates exist
+    if @customer.latitude.present? && @customer.longitude.present?
+      @map_marker = [{
+        lat: @customer.latitude,
+        lng: @customer.longitude,
+        title: @customer.business_name,
+        info_window_html: "<strong>#{@customer.business_name}</strong><br>#{@customer.full_address}"
+      }]
+    else
+      @map_marker = []
+    end
   end
 
-  # app/controllers/customers_controller.rb
+  # GET /customers/new
   def new
     @customer = current_user.customers.build
-    # ADD THIS LINE to build the 3 blank contact fields
+    # Build 3 empty contact fields by default for the form
     3.times { @customer.contacts.build }
   end
 
   # GET /customers/1/edit
   def edit
-    # This ensures there are always 3 contact fields on the edit form.
-    (3 - @customer.contacts.size).times { @customer.contacts.build }
   end
 
-  # POST /customers or /customers.json
+  # POST /customers
   def create
     @customer = current_user.customers.build(customer_params)
 
-    respond_to do |format|
-      if @customer.save
-        format.html { redirect_to @customer, notice: "Customer was successfully created." }
-        format.json { render :show, status: :created, location: @customer }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @customer.errors, status: :unprocessable_entity }
-      end
+    if @customer.save
+      redirect_to @customer, notice: "Customer was successfully created."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /customers/1 or /customers/1.json
+  # PATCH/PUT /customers/1
   def update
-    respond_to do |format|
-      if @customer.update(customer_params)
-        format.html { redirect_to @customer, notice: "Customer was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @customer }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @customer.errors, status: :unprocessable_entity }
-      end
+    if @customer.update(customer_params)
+      redirect_to @customer, notice: "Customer was successfully updated."
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /customers/1 or /customers/1.json
+  # DELETE /customers/1
   def destroy
-    @customer.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to customers_path, notice: "Customer was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    @customer.destroy
+    redirect_to customers_url, notice: "Customer was successfully destroyed.", status: :see_other
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_customer
-      @customer = current_user.customers.includes(:machines, :jobs).find(params[:id])
+      @customer = current_user.customers.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def customer_params
       params.require(:customer).permit(
-      # Top-level customer attributes
-      :business_name, :street_address, :city, :state, :zip,
-      :customer_since, :status, :notes,
-
-      # --- THIS IS THE CRITICAL PART ---
-      # This tells Rails to accept a hash of attributes for contacts.
-      # For each contact, we permit the ID (for existing records),
-      # all its attributes, and the special _destroy flag for deletion.
-      contacts_attributes: [:id, :name, :role, :phone, :email, :_destroy]
+        :business_name, 
+        :street_address, 
+        :city, 
+        :state, 
+        :zip, 
+        :customer_since, 
+        :status, 
+        :notes,
+        contacts_attributes: [:id, :name, :role, :phone, :email, :_destroy]
       )
     end
-
 end
