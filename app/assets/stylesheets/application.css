@@ -154,3 +154,49 @@
 .gm-style .gm-style-iw * {
   box-sizing: content-box;
 }
+
+/* === GOOGLE MAPS INFO WINDOW STYLING === */
+
+/* 1. The main container for the info window content */
+.gm-style .gm-style-iw-c {
+  background-color: #374151 !important; /* Dark grey background */
+  color: #ffffff !important; /* White text */
+  border-radius: 8px !important; /* Optional: rounded corners */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important; /* Add a nice shadow */
+  padding: 12px !important; /* Add some padding */
+}
+
+/* 2. The content wrapper inside the info window */
+.gm-style .gm-style-iw-d {
+  overflow: auto !important; /* Allow scrolling if content is too long */
+  color: #ffffff !important; /* Ensure text inside is white */
+  max-height: 200px !important; /* Limit height */
+}
+
+/* 3. Links inside the info window */
+.gm-style .gm-style-iw-d a {
+  color: #60a5fa !important; /* Light blue color for links to make them pop */
+  text-decoration: none !important;
+  font-weight: bold !important;
+}
+
+.gm-style .gm-style-iw-d a:hover {
+  text-decoration: underline !important;
+}
+
+/* 4. The "tail" or "arrow" pointing down to the marker */
+.gm-style .gm-style-iw-tc::after {
+  background: #374151 !important; /* Make the tail match the background color */
+}
+
+/* 5. The close button (the 'x' in the top right) */
+.gm-style .gm-ui-hover-effect {
+  filter: invert(1) grayscale(1) brightness(2) !important; /* Make the 'x' white so it's visible */
+  opacity: 0.8 !important;
+  top: 4px !important; /* Adjust position */
+  right: 4px !important;
+}
+
+.gm-style .gm-ui-hover-effect:hover {
+  opacity: 1 !important;
+}
