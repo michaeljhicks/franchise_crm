@@ -1,13 +1,18 @@
 <h1>Welcome, <%= current_user.owner_name.presence || current_user.email %>!</h1>
+
 <article>
   <header><strong>Machine Locations</strong></header>
-    <div style="height: 400px; width: 100%; border-radius: 4px;"
-      data-controller="map"
-      data-map-api-key-value="<%= Rails.application.credentials.dig(:google_maps, :api_key) %>"
-      data-map-markers-value="<%= @map_markers.to_json %>">
-      Loading Map...
-    </div>
+
+  <div
+    style="height: 400px; width: 100%; border-radius: 4px;"
+    data-controller="map"
+    data-map-api-key-value="<%= Rails.application.credentials.dig(:google_maps, :api_key) %>"
+    data-map-markers-value="<%= @map_markers.to_json %>"
+  >
+    Loading Map...
+  </div>
 </article>
+
 <p>This is your central dashboard. Have a look at your upcoming schedule.</p>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1rem;">
@@ -16,7 +21,6 @@
     <header>
       <strong><%= Time.zone.now.strftime("%B %Y") %> Jobs</strong> (<%= @this_months_jobs.count %>)
     </header>
-
 
     <p><strong>Uncompleted Jobs This Month (<%= @uncompleted_jobs_this_month.count %>)</strong></p>
     <% if @uncompleted_jobs_this_month.any? %>
@@ -32,7 +36,6 @@
       <p>All jobs for this month are completed!</p>
     <% end %>
   </article>
-
 
   <article>
     <header>
@@ -51,7 +54,6 @@
       <p>No jobs scheduled for this month.</p>
     <% end %>
   </article>
-
 
   <article>
     <header>

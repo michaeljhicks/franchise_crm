@@ -137,11 +137,14 @@
     <% if @map_marker.any? %>
       <article>
         <header><strong>Location</strong></header>
-        <div style="height: 300px; width: 100%; border-radius: 4px;"
-            data-controller="map"
-            data-map-api-key-value="<%= Rails.application.credentials.dig(:google_maps, :api_key) %>"
-            data-map-markers-value="<%= @map_marker.to_json %>">
-            Loading Map...
+        <div
+          style="height: 300px; width: 100%; border-radius: 4px;"
+          data-controller="map"
+          data-map-api-key-value="<%= Rails.application.credentials.dig(:google_maps, :api_key) %>"
+          data-map-map-id-value="<%= Rails.application.credentials.dig(:google_maps, :map_id) %>"
+          data-map-markers-value="<%= @map_marker.to_json %>"
+        >
+          Loading Map...
         </div>
         <footer style="font-size: 0.85em;">
           <%= @customer.full_address %>

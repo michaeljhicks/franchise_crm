@@ -22,6 +22,7 @@ export default class extends Controller {
 
     const script = document.createElement("script")
     script.id = "google-maps-script"
+    // We remove "libraries=marker" because the standard red pin doesn't need it
     script.src = `https://maps.googleapis.com/maps/api/js?key=${this.apiKeyValue}&callback=initMap`
     script.async = true
     script.defer = true
@@ -31,14 +32,15 @@ export default class extends Controller {
   initMap() {
     const map = new google.maps.Map(this.element, {
       zoom: 4,
-      center: { lat: 39.8283, lng: -98.5795 }
+      center: { lat: 39.8283, lng: -98.5795 } // Center of US
     })
 
     const bounds = new google.maps.LatLngBounds()
     const infoWindow = new google.maps.InfoWindow()
 
     this.markersValue.forEach((markerData) => {
-      // PURE GOOGLE MARKER - NO ICON PROPERTY
+      // PURE DEFAULT GOOGLE MARKER
+      // By not specifying an 'icon' or 'content', Google defaults to the Red Pin
       const marker = new google.maps.Marker({
         position: { lat: Number(markerData.lat), lng: Number(markerData.lng) },
         map: map,
@@ -56,6 +58,7 @@ export default class extends Controller {
     if (this.markersValue.length > 0) {
       map.fitBounds(bounds)
       
+      // Prevent zooming in too close if there's only one customer
       const listener = google.maps.event.addListener(map, "idle", () => { 
         if (map.getZoom() > 15) map.setZoom(15); 
         google.maps.event.removeListener(listener); 
